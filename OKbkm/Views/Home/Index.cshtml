@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="home-container">
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">OKbkm Bank</a>
+            <a href="/Login/Index" class="login-button">Giriş Yap</a>
+        </nav>
+    </header>
+    <h1>BKM İCO'ya Hoş Geldiniz</h1>
+    <div class="hero-image">
+        <img src="~/Images/BKM_.png" alt="BKM Bank" asp-append-version="true">
+    </div>
+    <div class="content">
+        <div class="info-box">
+            <h2>Banka Hakkında</h2>
+            <p>OKbkm Bank, dijital finans dünyasında yenilikçi çözümler sunan, güvenilir ve modern bir bankacılık platformudur. Müşterilerine, kolay, hızlı ve güvenli bankacılık deneyimi sağlamak için gelişmiş teknoloji kullanmaktadır.</p>
+            <p>Bankamız, müşteri odaklı çözümleriyle, internet ve mobil bankacılığı en iyi şekilde entegre ederek, kullanıcı dostu bir hizmet anlayışı sunar.</p>
+        </div>
+        <div class="info-box">
+            <h2>Detaylı Bilgiler</h2>
+            <p>OKbkm Bank, geniş işlem ağı, güçlü güvenlik altyapısı ve kullanıcı dostu hizmet anlayışı ile finansal ihtiyaçlarınıza çözüm sunar. Güvenli ödeme sistemleri ve esnek finansal çözümlerle, tüm müşterilerine kaliteli bir deneyim sunar.</p>
+            <p>Uluslararası güvenlik standartlarına uygun olarak geliştirilen altyapımız sayesinde, tüm işlemleriniz yüksek güvenlik önlemleri ile korunmaktadır. Daha fazla bilgi almak için bizimle iletişime geçebilirsiniz.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }    
+    .navbar {
+        background: black;
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+    .navbar .logo {
+        font-size: 22px;
+        font-weight: bold;
+        text-decoration: none;
+        color: white;
+        margin-right: auto;
+    }
+    .login-button {
+        padding: 10px 20px;
+        background: #d63384;
+        color: white;
+        text-decoration: none;
+        border-radius: 20px;
+        font-size: 16px;
+        margin-right: 20px;
+    }
+    .login-button:hover {
+        background: #b8266c;
+    }
+    .home-container {
+        text-align: center;
+        padding: 100px 50px 50px 50px;
+    }
+    .hero-image {
+        margin: 20px 0;
+    }
+    .hero-image img {
+        max-width: 500px;
+        border-radius: 10px;
+    }
+    .content {
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+        margin-top: 30px;
+    }
+    .info-box {
+        width: 75%;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-align: left;
+    }
+    .info-box h2 {
+        color: #d63384;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .info-box p {
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: justify;
+    }
+</style>

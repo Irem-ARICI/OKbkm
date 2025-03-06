@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace OKbkm.Views
+namespace OKbkm.Controllers
 {
-    public class HomeController : Controller
+    public class TransactionsController : Controller
     {
         public IActionResult Index()
         {

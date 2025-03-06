@@ -1,0 +1,114 @@
+﻿@model List<OKbkm.Models.AccountCreate>
+
+@{
+    ViewData["Title"] = "Account Create Page";
+}
+
+<div class="account-container">
+    <h1>Account Create Page</h1>
+
+    <form asp-action="Create" method="post" class="account-form">
+        <div class="form-group">
+            <label for="tc">T.C. Kimlik No:</label>
+            <input type="text" id="tc" name="TC" class="form-control" required oninput="fetchUsername()">
+        </div>
+        <div class="form-group">
+            <label for="cardType">Kart Tipi:</label>
+            <select id="cardType" name="CardType" class="form-control">
+                <option value="Kredi Kartı">Kredi Kartı</option>
+                <option value="Banka Kartı">Banka Kartı</option>
+                <option value="Öğrenci Kartı">Öğrenci Kartı</option>
+                <option value="Genç Kart">Genç Kart</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Ekle</button>
+    </form>
+
+    <h3>Mevcut hesaplarınız:</h3>
+    <table class="account-table">
+        <thead>
+            <tr>
+                <th>Ad Soyad</th>
+                <th>Kart Tipi</th>
+                <th>Hesap Toplamı</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model)
+            {
+                    <tr>
+                        <td>@account.TC</td> <!-- Kullanıcının TC'ye göre adını gösteriyoruz -->
+                        <td>@account.CardType</td>
+                        <td>@account.AccountNo</td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function fetchUsername() {
+        var tc = document.getElementById("tc").value;
+        var nameInput = document.getElementById("name");
+
+        var users = {
+            "12345678901": "Ahmet Yılmaz",
+            "98765432109": "Merve Aksoy"
+        };
+
+        nameInput.value = users[tc] || "";
+    }
+</script>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .account-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .account-table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+    .account-table th, .account-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background: #007bff;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+</style>

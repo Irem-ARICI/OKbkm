@@ -1,93 +1,101 @@
-﻿@{
-    Layout = null;
+﻿@model OKbkm.Models.Login
+
+@{
+    ViewData["Title"] = "Giriş Yap";
+    // Layout = "_Layout";
 }
 
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Giriş Yap</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .login-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .login-container h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-            text-align: center;
-        }
-
-        .login-container label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .login-container input {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .login-container button:hover {
-            background-color: #0056b3;
-        }
-
-        .error-message {
-            color: red;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="login-container">
-        <h2>Giriş Yap</h2>
+<div class="login-container">
+    <div class="login-card">
+        <h2>OKbkm Bank</h2>
+        <h3>Hesabınıza Giriş Yapın</h3>
         @if (ViewBag.Error != null)
         {
             <div class="error-message">@ViewBag.Error</div>
         }
-        <form method="post">
-            <label for="tc">TC Kimlik Numarası</label>
-            <input type="text" id="tc" name="tc" maxlength="11" required>
-
-            <label for="password">Şifre</label>
-            <input type="password" id="password" name="password" required>
-
-            <button type="submit">Giriş Yap</button>
+        <form asp-action="Index" method="post" class="login-form">
+            <div class="form-group">
+                <label asp-for="TC">T.C. Kimlik No</label>
+                <input asp-for="TC" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Şifre</label>
+                <input asp-for="Password" type="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Giriş Yap</button>
         </form>
+        <p class="register-link">Hesabınız yok mu? <a href="/Register/Index">Kayıt Olun</a></p>
     </div>
+</div>
 
-</body>
-</html>
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: Arial, sans-serif;
+    }
+
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .login-card {
+        width: 350px;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+        .login-card h2 {
+            color: #4a47a3;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .login-card h3 {
+            font-size: 18px;
+            color: #555;
+        }
+
+    .form-group {
+        margin: 15px 0;
+        text-align: left;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background: #4a47a3;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .btn-primary:hover {
+            background: #3a36a3;
+        }
+
+    .register-link {
+        margin-top: 15px;
+    }
+
+    .error-message {
+        color: red;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+</style>

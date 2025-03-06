@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Home\" />
+    <None Include="wwwroot\Images\BKM_.png" />
   </ItemGroup>
 
 </Project>
