@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using OKbkm.Data;
+using OKbkm;
 
 #nullable disable
 
 namespace OKbkm.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(Context))]
+    partial class ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -43,7 +43,28 @@ namespace OKbkm.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("ACreates");
+                });
+
+            modelBuilder.Entity("OKbkm.Models.Login", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TC")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Logins");
                 });
 
             modelBuilder.Entity("OKbkm.Models.Register", b =>
@@ -80,7 +101,7 @@ namespace OKbkm.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Registers");
                 });
 
             modelBuilder.Entity("OKbkm.Models.TransactionHistory", b =>
@@ -99,6 +120,37 @@ namespace OKbkm.Migrations
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("id");
+
+                    b.ToTable("THistories");
+                });
+
+            modelBuilder.Entity("OKbkm.Models.Transactions", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int>("AccountNo")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Deposit")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Transfer")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Withdrawal")
+                        .HasColumnType("numeric");
 
                     b.HasKey("id");
 

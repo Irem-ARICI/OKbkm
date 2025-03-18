@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OKbkm.Models;
-using OKbkm.Data; // ApplicationDbContext'i kullanabilmek için
+
 using System.Linq;
 
 namespace OKbkm.Controllers
 {
     public class RegisterController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Context _context;
 
-        public RegisterController(ApplicationDbContext context)
+        public RegisterController(Context context)
         {
             _context = context;
         }
@@ -26,16 +26,28 @@ namespace OKbkm.Controllers
             if (ModelState.IsValid)
             {
                 // Kullanıcının zaten kayıtlı olup olmadığını kontrol et
-                var existingUser = _context.Users.FirstOrDefault(u => u.TC == model.TC);
+                var existingUser = _context.Registers.FirstOrDefault(u => u.TC == model.TC);
                 if (existingUser != null)
                 {
                     ModelState.AddModelError("", "Bu TC kimlik numarası ile zaten kayıtlı bir kullanıcı var.");
                     return View(model);
                 }
 
+                //// Yeni kullanıcıyı veritabanına ekle
+                //_context.Registers.Add(model);
+                //_context.SaveChanges();
                 // Yeni kullanıcıyı veritabanına ekle
-                _context.Users.Add(model);
+                _context.Registers.Add(new Register
+                {
+                    TC = model.TC,
+                    NameUsername = model.NameUsername,
+                    Mail = model.Mail,
+                    Password = model.Password,
+                    PhoneNumber = model.PhoneNumber,
+                    Address = model.Address
+                });
                 _context.SaveChanges();
+
 
                 return RedirectToAction("Welcome");
             }

@@ -1,19 +1,28 @@
-using Npgsql.EntityFrameworkCore.PostgreSQL;
+﻿using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
-using OKbkm.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using OKbkm;
+using OKbkm.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// appsettings.json’dan ConnectionString’i al
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// PostgreSQL bağlantısını ekle
+builder.Services.AddDbContext<Context>(options =>
+    options.UseNpgsql(connectionString));
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
 
 
