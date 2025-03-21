@@ -12,9 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // appsettings.json’dan ConnectionString’i al
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// PostgreSQL bağlantısını ekle
-builder.Services.AddDbContext<Context>(options =>
+builder.Services.AddDbContext<Context>(options =>   // PostgreSQL bağlantısını ekle
     options.UseNpgsql(connectionString));
 
 
@@ -24,14 +22,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(); // Session'ı ekliyoruz
 
 
 
 var app = builder.Build();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -39,6 +38,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseSession(); // Middleware olarak kullanıyoruz
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -48,4 +51,3 @@ app.MapControllers();
 app.UseStaticFiles();
 
 app.Run();
-

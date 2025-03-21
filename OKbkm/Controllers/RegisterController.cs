@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OKbkm.Models;
-
+using Microsoft.Extensions.Logging;
 using System.Linq;
 
 namespace OKbkm.Controllers
@@ -16,6 +16,7 @@ namespace OKbkm.Controllers
 
         [HttpGet]
         public IActionResult Index()
+        
         {
             return View();
         }
@@ -23,35 +24,41 @@ namespace OKbkm.Controllers
         [HttpPost]
         public IActionResult Index(Register model)
         {
-            if (ModelState.IsValid)
+            Console.WriteLine("📌 Register formu gönderildi!");
+
+            if (!ModelState.IsValid)
             {
-                // Kullanıcının zaten kayıtlı olup olmadığını kontrol et
-                var existingUser = _context.Registers.FirstOrDefault(u => u.TC == model.TC);
-                if (existingUser != null)
+                Console.WriteLine("🚨 ModelState geçersiz! Form validation hatası var.");
+                foreach (var key in ModelState.Keys)
                 {
-                    ModelState.AddModelError("", "Bu TC kimlik numarası ile zaten kayıtlı bir kullanıcı var.");
-                    return View(model);
+                    foreach (var error in ModelState[key].Errors)
+                    {
+                        Console.WriteLine($"Hata - {key}: {error.ErrorMessage}");
+                    }
                 }
-
-                //// Yeni kullanıcıyı veritabanına ekle
-                //_context.Registers.Add(model);
-                //_context.SaveChanges();
-                // Yeni kullanıcıyı veritabanına ekle
-                _context.Registers.Add(new Register
-                {
-                    TC = model.TC,
-                    NameUsername = model.NameUsername,
-                    Mail = model.Mail,
-                    Password = model.Password,
-                    PhoneNumber = model.PhoneNumber,
-                    Address = model.Address
-                });
-                _context.SaveChanges();
-
-
-                return RedirectToAction("Welcome");
+                return View(model);
             }
-            return View(model);
+
+            Console.WriteLine($"Gelen TC Kimlik No: {model.TC}");
+            Console.WriteLine($"Gelen Ad Soyad: {model.NameUsername}");
+            Console.WriteLine($"Gelen Mail: {model.Mail}");
+            Console.WriteLine($"Gelen Şifre: {model.Password}");
+            Console.WriteLine($"Gelen Telefon: {model.PhoneNumber}");
+            Console.WriteLine($"Gelen Adres: {model.Address}");
+
+            var existingUser = _context.Registers.FirstOrDefault(u => u.TC == model.TC);
+            if (existingUser != null)
+            {
+                Console.WriteLine("🚨 Bu TC kimlik numarası ile zaten kayıtlı bir kullanıcı var!");
+                ModelState.AddModelError("", "Bu TC kimlik numarası ile zaten kayıtlı bir kullanıcı var.");
+                return View(model);
+            }
+
+            _context.Registers.Add(model);
+            int result = _context.SaveChanges();
+            Console.WriteLine($"✅ Kayıt işlemi tamamlandı! Kaydedilen kayıt sayısı: {result}");
+
+            return RedirectToAction("Welcome");
         }
 
         public IActionResult Welcome()
@@ -60,37 +67,3 @@ namespace OKbkm.Controllers
         }
     }
 }
-
-
-
-
-//using Microsoft.AspNetCore.Mvc;
-//using OKbkm.Models;
-
-//namespace OKbkm.Controllers
-//{
-//    public class RegisterController : Controller
-//    {
-//        [HttpGet]
-//        public IActionResult Index()
-//        {
-//            return View();
-//        }
-
-//        [HttpPost]
-//        public IActionResult Index(Register model)
-//        {
-//            if (ModelState.IsValid)
-//            {
-//                // Burada kayıt işlemi yapılabilir (veritabanına ekleme vs.)
-//                return RedirectToAction("Welcome");
-//            }
-//            return View(model);
-//        }
-
-//        public IActionResult Welcome()
-//        {
-//            return Content("Kaydınız başarıyla tamamlandı. Hoş geldiniz!");
-//        }
-//    }
-//}

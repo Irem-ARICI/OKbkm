@@ -3,7 +3,9 @@
     public class Login
     {
         public int id { get; set; }
+        //[Required(ErrorMessage = "TC Kimlik Numarası gereklidir.")]
         public string TC { get; set; }
-        public  string Password { get; set; }
+        //   [Required(ErrorMessage = "Şifre gereklidir.")]
+        public string Password { get; set; }
     }
 }
