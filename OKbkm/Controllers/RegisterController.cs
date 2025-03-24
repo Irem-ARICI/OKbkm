@@ -61,7 +61,7 @@ namespace OKbkm.Controllers
             return RedirectToAction("Welcome");
         }
 
-        public IActionResult Welcome()
+        public IActionResult Welcome()      // kaldırcam bunu büyük ihtimalle
         {
             return Content("Kaydınız başarıyla tamamlandı. Hoş geldiniz!");
         }

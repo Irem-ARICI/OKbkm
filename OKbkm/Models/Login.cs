@@ -7,5 +7,6 @@
         public string TC { get; set; }
         //   [Required(ErrorMessage = "Şifre gereklidir.")]
         public string Password { get; set; }
+        public DateTime LoginDate { get; set; } // 🆕 Giriş zamanı
     }
 }

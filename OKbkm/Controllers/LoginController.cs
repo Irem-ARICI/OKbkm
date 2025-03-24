@@ -42,16 +42,17 @@ namespace OKbkm.Controllers
                 HttpContext.Session.SetString("UserTC", user.TC); // Kullanıcı bilgilerini session'a kaydet
                 HttpContext.Session.SetString("UserName", user.NameUsername);
 
-                // 🛠 **Giriş yapan kullanıcıyı Logins tablosuna ekleyelim**
+                // Giriş yapan kullanıcıyı Logins tablosuna ekleyelim
                 var loginEntry = new Login
                 {
                     TC = user.TC,
-                    Password = user.Password
+                    Password = user.Password,
+                    LoginDate = DateTime.UtcNow
                 };
                 _context.Logins.Add(loginEntry);
                 _context.SaveChanges();
 
-                return RedirectToAction("Welcome");
+                return RedirectToAction("Index", "UserPanel");
             }
 
             Console.WriteLine("🚨 Giriş başarısız! TC kimlik numarası veya şifre hatalı.");
@@ -61,7 +62,6 @@ namespace OKbkm.Controllers
 
         public IActionResult Welcome()
         {
-            // Eğer kullanıcı giriş yapmamışsa, login sayfasına yönlendir
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserTC")))
             {
                 return RedirectToAction("Index");
