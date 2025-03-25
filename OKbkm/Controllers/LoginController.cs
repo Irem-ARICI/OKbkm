@@ -23,7 +23,7 @@ namespace OKbkm.Controllers
         [HttpPost]
         public IActionResult Index(Login model)
         {
-            Console.WriteLine("📌 Login formu gönderildi!");
+            //Console.WriteLine("📌 Login formu gönderildi!");
 
             if (!ModelState.IsValid)
             {

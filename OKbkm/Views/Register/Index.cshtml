@@ -8,6 +8,143 @@
     <div class="register-card">
         <h2>OKbkm Bank</h2>
         <h3>Yeni Hesap Oluştur</h3>
+
+        <form asp-action="Index" asp-controller="Register" method="post" class="register-form">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                <label for="TC">T.C. Kimlik No</label>
+                <input asp-for="TC" class="form-control" />
+                <span asp-validation-for="TC" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="NameUsername">Ad Soyad</label>
+                <input asp-for="NameUsername" class="form-control" />
+                <span asp-validation-for="NameUsername" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Mail">E-Posta</label>
+                <input asp-for="Mail" type="email" class="form-control" />
+                <span asp-validation-for="Mail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Şifre</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="PhoneNumber">Telefon Numarası</label>
+                <input asp-for="PhoneNumber" type="tel" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Address">Adres</label>
+                <textarea asp-for="Address" class="form-control"></textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+        </form>
+
+        <p class="login-link">Zaten bir hesabınız var mı? <a href="/Login/Index">Giriş Yap</a></p>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: Arial, sans-serif;
+    }
+
+    .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .register-card {
+        width: 400px;
+        padding: 25px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+        .register-card h2 {
+            color: #4a47a3;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .register-card h3 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+    .form-group {
+        margin: 15px 0;
+        text-align: left;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background: #4a47a3;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .btn-primary:hover {
+            background: #3a36a3;
+        }
+
+    .login-link {
+        margin-top: 15px;
+    }
+
+    .text-danger {
+        font-size: 13px;
+        color: red;
+    }
+</style>
+
+
+
+@* @model OKbkm.Models.Register
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="register-container">
+    <div class="register-card">
+        <h2>OKbkm Bank</h2>
+        <h3>Yeni Hesap Oluştur</h3>
         <form asp-action="Index" asp-controller="Register" method="post">
             <label for="TC">T.C. Kimlik No</label>
             <input asp-for="TC" id="TC" name="TC" class="form-control" required>
@@ -32,3 +169,4 @@
         <p class="login-link">Zaten bir hesabınız var mı? <a href="/Login/Index">Giriş Yap</a></p>
     </div>
 </div>
+ *@

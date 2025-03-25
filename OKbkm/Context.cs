@@ -28,5 +28,6 @@ namespace OKbkm
         public DbSet<Register> Registers { get; set; }
         public DbSet<TransactionHistory> THistories { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
+        public DbSet<AccountCreate> AccountCreates { get; set; }
     }
 }

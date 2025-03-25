@@ -4,14 +4,6 @@ namespace OKbkm.Controllers
 {
     public class UserPanelController : Controller
     {
-        //public IActionResult Index()
-        //{
-        //    var name = HttpContext.Session.GetString("NameUsername");
-        //    ViewBag.UserName = User.Identity.Name ?? "Kullanıcı";
-        //    return View();
-        //}
-
-        // Kullanıcı panelinin ana sayfası
         public IActionResult Index()
         {
             var userName = HttpContext.Session.GetString("UserName");
@@ -28,7 +20,7 @@ namespace OKbkm.Controllers
         // Account Create sayfasına yönlendir
         public IActionResult GoToCreateAccount()
         {
-            return RedirectToAction("Create", "Account");
+            return RedirectToAction("Index", "AccountCreate");
         }
 
         // Transaction sayfasına yönlendir
