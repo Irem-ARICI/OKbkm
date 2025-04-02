@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OKbkm.Models;
-using Microsoft.Extensions.Logging;
 using System.Linq;
 
 namespace OKbkm.Controllers
@@ -16,7 +15,6 @@ namespace OKbkm.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        
         {
             return View();
         }
@@ -24,46 +22,46 @@ namespace OKbkm.Controllers
         [HttpPost]
         public IActionResult Index(Register model)
         {
-            Console.WriteLine("📌 Register formu gönderildi!");
-
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("🚨 ModelState geçersiz! Form validation hatası var.");
-                foreach (var key in ModelState.Keys)
-                {
-                    foreach (var error in ModelState[key].Errors)
-                    {
-                        Console.WriteLine($"Hata - {key}: {error.ErrorMessage}");
-                    }
-                }
+                var allErrors = ModelState.SelectMany(kvp => kvp.Value.Errors)
+                                           .Select(e => e.ErrorMessage)
+                                           .ToList();
+
+                ViewBag.Errors = allErrors;
                 return View(model);
             }
 
-            Console.WriteLine($"Gelen TC Kimlik No: {model.TC}");
-            Console.WriteLine($"Gelen Ad Soyad: {model.NameUsername}");
-            Console.WriteLine($"Gelen Mail: {model.Mail}");
-            Console.WriteLine($"Gelen Şifre: {model.Password}");
-            Console.WriteLine($"Gelen Telefon: {model.PhoneNumber}");
-            Console.WriteLine($"Gelen Adres: {model.Address}");
+            //if (!ModelState.IsValid)
+            //{
+            //    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            //    ViewBag.Errors = errors; // View’a gönder
+            //    return View(model);
+            //}
 
             var existingUser = _context.Registers.FirstOrDefault(u => u.TC == model.TC);
             if (existingUser != null)
             {
-                Console.WriteLine("🚨 Bu TC kimlik numarası ile zaten kayıtlı bir kullanıcı var!");
-                ModelState.AddModelError("", "Bu TC kimlik numarası ile zaten kayıtlı bir kullanıcı var.");
+                ModelState.AddModelError("TC", "Bu TC kimlik numarası ile zaten kayıtlı bir kullanıcı var.");
                 return View(model);
             }
 
             _context.Registers.Add(model);
             int result = _context.SaveChanges();
-            Console.WriteLine($"✅ Kayıt işlemi tamamlandı! Kaydedilen kayıt sayısı: {result}");
 
-            return RedirectToAction("Welcome");
+            if (result > 0)
+            {
+                TempData["Success"] = "Kayıt başarıyla tamamlandı!";
+                return RedirectToAction("Welcome");
+            }
+
+            ModelState.AddModelError("", "Kayıt sırasında bir hata oluştu.");
+            return View(model);
         }
 
-        public IActionResult Welcome()      // kaldırcam bunu büyük ihtimalle
+        public IActionResult Welcome()
         {
-            return Content("Kaydınız başarıyla tamamlandı. Hoş geldiniz!");
+            return Content("✅ Kaydınız başarıyla tamamlandı. Hoş geldiniz!");
         }
     }
 }

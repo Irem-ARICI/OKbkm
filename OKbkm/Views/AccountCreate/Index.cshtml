@@ -1,4 +1,4 @@
-﻿@model List<OKbkm.Models.AccountCreate>
+﻿@model List<OKbkm.Models.Account> 
 @{
     ViewData["Title"] = "Yeni Hesap Oluştur";
     var userName = ViewBag.UserName as string;
@@ -8,11 +8,17 @@
     <h2>Hoş geldiniz, <span class="pink">@userName</span>! 👋</h2>
     <h1>Yeni Hesap Oluştur</h1>
 
-    <form asp-controller="AccountCreate" asp-action="Create" method="post" class="account-form">
-    @* <form asp-action="Create" method="post" class="account-form"> *@
+    <form asp-action="Create" asp-controller="AccountCreate" method="post" class="account-form">
+        @if (ViewBag.Error != null)
+        {
+            <div style="color: red; margin-bottom: 10px; font-weight: bold;">
+                @ViewBag.Error
+            </div>
+        }
         <div class="form-group">
             <label>Kart Tipi:</label>
-            <select name="CardType" class="form-control">
+            <select name="CardType" class="form-control" required>
+                <option value="">Kart Seçin</option>
                 <option value="Kredi Kartı">Kredi Kartı</option>
                 <option value="Banka Kartı">Banka Kartı</option>
                 <option value="Öğrenci Kartı">Öğrenci Kartı</option>

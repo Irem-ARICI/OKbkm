@@ -1,5 +1,133 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model OKbkm.Models.Transactions
 @{
+    ViewData["Title"] = "İşlem Yap";
 }
+
+<div class="transaction-container">
+    <div class="transaction-card">
+        <h2>OKbkm Bank</h2>
+        <h3>Hesap İşlemleri</h3>
+
+        <form asp-action="Index" asp-controller="Transactions" method="post">
+            <!-- Hesap No -->
+            <div class="form-group">
+                <label>Hesap Numarası</label>
+                <input asp-for="AccountNo" name="AccountNo" class="form-control" placeholder="9 haneli hesap numarası" />
+                <span asp-validation-for="AccountNo" class="text-danger"></span>
+            </div>
+
+            <!-- İşlem Türü -->
+            <div class="form-group">
+                <label>İşlem Türü</label>
+                <select asp-for="TransactionType" class="form-control" id="transactionType">
+                    <option value="Deposit">Para Yatırma</option>
+                    <option value="Withdrawal">Para Çekme</option>
+                    <option value="Transfer">Transfer</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="receiverField" style="display: none;">
+                <label>Alıcı Hesap Numarası</label>
+                <input asp-for="ReceiverAccountNo" class="form-control" placeholder="Alıcı hesap numarası" />
+                <span asp-validation-for="ReceiverAccountNo" class="text-danger"></span>
+            </div>
+            
+
+            <!-- Tutar -->
+            <div class="form-group">
+                <label>Tutar</label>
+                <input asp-for="Total" type="number" step="0.01" class="form-control" />
+                <span asp-validation-for="Total" class="text-danger"></span>
+            </div>
+
+            <!-- Açıklama -->
+            <div class="form-group">
+                <label>Açıklama</label>
+                <textarea asp-for="Description" class="form-control" placeholder="İsteğe bağlı"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">İşlemi Tamamla</button>
+        </form>
+    </div>
+</div>
+
+<!-- ✅ Script: Transfer seçilince alıcı alanı gözüksün -->
+@section Scripts {
+    <script>
+        const transactionType = document.getElementById("transactionType");
+        const receiverField = document.getElementById("receiverField");
+
+        function toggleReceiverField() {
+            if (transactionType.value === "Transfer") {
+                receiverField.style.display = "block";
+            } else {
+                receiverField.style.display = "none";
+            }
+        }
+
+        // Sayfa yüklendiğinde kontrol et
+        window.addEventListener("load", toggleReceiverField);
+        transactionType.addEventListener("change", toggleReceiverField);
+    </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+<!-- ✅ Stil -->
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .transaction-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+    }
+
+    .transaction-card {
+        width: 400px;
+        padding: 25px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .form-group {
+        margin: 15px 0;
+        text-align: left;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background: #4a47a3;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .btn-primary:hover {
+            background: #3a36a3;
+        }
+
+    .text-danger {
+        font-size: 13px;
+        color: red;
+    }
+</style>

@@ -1,31 +1,32 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace OKbkm.Models
 {
     public class Register
     {
-        [Key]
+        //[Key]
         public int id { get; set; }
 
-        [Required(ErrorMessage = "TC kimlik numarası zorunludur.")]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "TC kimlik numarası 11 haneli rakamlardan oluşmalıdır.")]
+        //[Required(ErrorMessage = "TC kimlik numarası zorunludur.")]
+        //[RegularExpression(@"^\d{11}$", ErrorMessage = "TC kimlik numarası 11 haneli olmalıdır.")]
         public string TC { get; set; }
 
-        [Required(ErrorMessage = "Kullanıcı adı zorunludur.")]
+        //[Required(ErrorMessage = "Ad Soyad zorunludur.")]
         public string NameUsername { get; set; }
 
-        [Required(ErrorMessage = "Mail adresi zorunludur.")]
-        [EmailAddress(ErrorMessage = "Geçerli bir mail adresi giriniz.")]
+        //[Required(ErrorMessage = "Mail adresi zorunludur.")]
+        //[EmailAddress(ErrorMessage = "Geçerli bir mail adresi giriniz.")]
         public string Mail { get; set; }
 
-        [Required(ErrorMessage = "Şifre zorunludur.")]
-        [StringLength(100, MinimumLength = 4, ErrorMessage = "Şifre en az 4 karakter olmalıdır.")]
-        [RegularExpression(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).+$", ErrorMessage = "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir.")]
+        //[Required(ErrorMessage = "Şifre zorunludur.")]
+        //[StringLength(100, MinimumLength = 6, ErrorMessage = "Şifre en az 6 karakter olmalıdır.")]
+        //[RegularExpression(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).+$", ErrorMessage = "Şifre büyük harf, küçük harf ve rakam içermelidir.")]
         public string Password { get; set; }
 
-        [Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz.")]
-        public string PhoneNumber { get; set; } 
+        //[Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz.")]
+        public string PhoneNumber { get; set; }
+
+        //[Required(ErrorMessage = "Adres zorunludur.")]
         public string Address { get; set; }
     }
 }

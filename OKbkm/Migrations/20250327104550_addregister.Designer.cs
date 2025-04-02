@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OKbkm;
@@ -11,9 +12,11 @@ using OKbkm;
 namespace OKbkm.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250327104550_addregister")]
+    partial class addregister
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,15 +164,14 @@ namespace OKbkm.Migrations
 
             modelBuilder.Entity("OKbkm.Models.Transactions", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<string>("AccountNo")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("AccountNo")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
@@ -177,22 +179,8 @@ namespace OKbkm.Migrations
                     b.Property<decimal>("Deposit")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<int?>("ReceiverAccountNo")
-                        .HasColumnType("integer");
-
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("TransactionType")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<decimal>("Transfer")
                         .HasColumnType("numeric");
@@ -200,7 +188,7 @@ namespace OKbkm.Migrations
                     b.Property<decimal>("Withdrawal")
                         .HasColumnType("numeric");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Transactions");
                 });

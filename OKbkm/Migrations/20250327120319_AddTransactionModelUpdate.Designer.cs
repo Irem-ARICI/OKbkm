@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OKbkm;
@@ -11,9 +12,11 @@ using OKbkm;
 namespace OKbkm.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250327120319_AddTransactionModelUpdate")]
+    partial class AddTransactionModelUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,18 +184,11 @@ namespace OKbkm.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<int?>("ReceiverAccountNo")
-                        .HasColumnType("integer");
-
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("TransactionType")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<decimal>("Transfer")
                         .HasColumnType("numeric");

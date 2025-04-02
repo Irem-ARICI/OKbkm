@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OKbkm;
@@ -11,9 +12,11 @@ using OKbkm;
 namespace OKbkm.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250327114734_AddTransactionUpdate")]
+    partial class AddTransactionUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +170,8 @@ namespace OKbkm.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountNo")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("AccountNo")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
@@ -178,21 +180,13 @@ namespace OKbkm.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<int?>("ReceiverAccountNo")
-                        .HasColumnType("integer");
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("TransactionType")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<decimal>("Transfer")
                         .HasColumnType("numeric");

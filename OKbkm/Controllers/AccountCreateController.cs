@@ -25,7 +25,8 @@ namespace OKbkm.Controllers
 
             ViewBag.UserName = userName;
 
-            var userAccounts = _context.AccountCreates
+            // ✅ Account tablosunu kullanıyoruz artık!
+            var userAccounts = _context.Accounts
                 .Where(a => a.TC == userTC)
                 .ToList();
 
@@ -33,36 +34,53 @@ namespace OKbkm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(AccountCreate model)
+        public IActionResult Index([Bind("CardType")] Account model)
         {
             var userTC = HttpContext.Session.GetString("UserTC");
+            var userName = HttpContext.Session.GetString("UserName");
 
             if (string.IsNullOrEmpty(userTC))
                 return RedirectToAction("Index", "Login");
 
-            if (ModelState.IsValid)
+            // Aynı TC + KartTipi var mı kontrol et
+            var hasSameCard = _context.Accounts.Any(a => a.TC == userTC && a.CardType == model.CardType);
+            if (hasSameCard)
             {
-                model.TC = userTC;
+                ViewBag.UserName = userName;
+                ViewBag.Error = "Aynı kart tipinden birden fazla hesap oluşturamazsınız.";
+
+                var existingAccounts = _context.Accounts
+                    .Where(a => a.TC == userTC)
+                    .ToList();
+
+                return View(existingAccounts);
+            }
+
+            //if (ModelState.IsValid)
+            //{
+            model.TC = userTC;
                 model.AccountNo = GenerateAccountNumber();
                 model.Balance = 0.00m;
 
-                _context.AccountCreates.Add(model);
+                _context.Accounts.Add(model);
                 _context.SaveChanges();
+            //}
 
-                return RedirectToAction("Index");
-            }
+            ViewBag.UserName = userName;
 
-            var userAccounts = _context.AccountCreates
+            var userAccounts = _context.Accounts
                 .Where(a => a.TC == userTC)
                 .ToList();
 
-            ViewBag.UserName = HttpContext.Session.GetString("UserName");
-            return View("Index", userAccounts);
+            return View(userAccounts);
         }
 
         private int GenerateAccountNumber()
         {
-            return new Random().Next(1000000000, 1999999999);
+            Random rnd = new Random();
+            return rnd.Next(100000000, 999999999);
         }
+
+
     }
 }
