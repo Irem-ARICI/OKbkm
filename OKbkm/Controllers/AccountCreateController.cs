@@ -34,7 +34,7 @@ namespace OKbkm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index([Bind("CardType")] Account model)
+        public IActionResult Index([Bind("CardType")] Account model)    //         public IActionResult Index([Bind("CardType")] Account model)
         {
             var userTC = HttpContext.Session.GetString("UserTC");
             var userName = HttpContext.Session.GetString("UserName");
@@ -59,7 +59,7 @@ namespace OKbkm.Controllers
             //if (ModelState.IsValid)
             //{
             model.TC = userTC;
-                model.AccountNo = GenerateAccountNumber();
+            model.AccountNo = GenerateAccountNumber().ToString();
                 model.Balance = 0.00m;
 
                 _context.Accounts.Add(model);
@@ -72,13 +72,20 @@ namespace OKbkm.Controllers
                 .Where(a => a.TC == userTC)
                 .ToList();
 
-            return View(userAccounts);
+            //return View(userAccounts);
+             return RedirectToAction("Index");
         }
 
-        private int GenerateAccountNumber()
+        //private int GenerateAccountNumber()
+        //{
+        //    Random rnd = new Random();
+        //    return rnd.Next(100000000, 999999999);
+        //}
+
+        private string GenerateAccountNumber()
         {
             Random rnd = new Random();
-            return rnd.Next(100000000, 999999999);
+            return string.Join("", Enumerable.Range(0, 12).Select(i => rnd.Next(0, 10)));
         }
 
 

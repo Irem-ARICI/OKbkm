@@ -7,24 +7,43 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OKbkm.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ACreates",
+                name: "AccountCreate",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TC = table.Column<string>(type: "text", nullable: false),
-                    AccountNo = table.Column<int>(type: "integer", nullable: false),
-                    CardType = table.Column<string>(type: "text", nullable: false)
+                    AccountNo = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
+                    CardType = table.Column<string>(type: "text", nullable: false),
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ACreates", x => x.id);
+                    table.PrimaryKey("PK_AccountCreate", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TC = table.Column<string>(type: "text", nullable: false),
+                    AccountNo = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
+                    CardType = table.Column<string>(type: "text", nullable: false),
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -34,7 +53,8 @@ namespace OKbkm.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TC = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false)
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    LoginDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,9 +70,10 @@ namespace OKbkm.Migrations
                     TC = table.Column<string>(type: "text", nullable: false),
                     NameUsername = table.Column<string>(type: "text", nullable: false),
                     Mail = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: false)
+                    Address = table.Column<string>(type: "text", nullable: true),
+                    RegisterDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,33 +84,39 @@ namespace OKbkm.Migrations
                 name: "THistories",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountNo = table.Column<int>(type: "integer", nullable: false),
-                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
+                    AccountNo = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
+                    TransactionAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    BalanceAfter = table.Column<decimal>(type: "numeric", nullable: false),
+                    TransactionType = table.Column<string>(type: "text", nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_THistories", x => x.id);
+                    table.PrimaryKey("PK_THistories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountNo = table.Column<int>(type: "integer", nullable: false),
+                    AccountNo = table.Column<string>(type: "text", nullable: false),
                     Total = table.Column<decimal>(type: "numeric", nullable: false),
                     Deposit = table.Column<decimal>(type: "numeric", nullable: false),
                     Withdrawal = table.Column<decimal>(type: "numeric", nullable: false),
                     Transfer = table.Column<decimal>(type: "numeric", nullable: false),
-                    Balance = table.Column<decimal>(type: "numeric", nullable: false)
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    TransactionType = table.Column<string>(type: "text", nullable: false),
+                    ReceiverAccountNo = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.id);
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                 });
         }
 
@@ -97,7 +124,10 @@ namespace OKbkm.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ACreates");
+                name: "AccountCreate");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
 
             migrationBuilder.DropTable(
                 name: "Logins");

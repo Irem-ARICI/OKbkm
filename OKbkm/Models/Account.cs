@@ -2,21 +2,26 @@
 
 namespace OKbkm.Models
 {
-    public class Account
+    public class AccountCreate
     {
         [Key]
         public int id { get; set; }
 
         [Required]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "TC kimlik numarası 11 haneli olmalıdır.")]
         public string TC { get; set; }
-        [Required]
-        public int AccountNo { get; set; }  // random oluşaca
 
         [Required]
-        public string CardType { get; set; }  // Seçilecek
+        [StringLength(12, MinimumLength = 12, ErrorMessage = "12 haneli hesap numarası olmalıdır.")]
+        public string AccountNo { get; set; }
+
+        [Required]
+        public string CardType { get; set; } // Visa / MasterCard gibi
 
         [Required]
         [DataType(DataType.Currency)]
-        public decimal Balance { get; set; } = 0.00m; // default
+        public decimal Balance { get; set; } = 0.00m;
+
+        public DateTime CreateDate { get; set; } = DateTime.UtcNow;
     }
 }

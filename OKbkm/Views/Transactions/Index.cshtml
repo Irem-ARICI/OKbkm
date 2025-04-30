@@ -1,133 +1,124 @@
-﻿@model OKbkm.Models.Transactions
-@{
-    ViewData["Title"] = "İşlem Yap";
+﻿@{
+    ViewData["Title"] = "Hesap İşlemleri";
+    var accounts = ViewBag.Accounts as List<OKbkm.Models.Account> ?? new List<OKbkm.Models.Account>();
+    var selectedBalance = ViewBag.SelectedBalance;
+    var selectedAccountNo = ViewBag.SelectedAccountNo as string;
+    var hasSelectedAccount = !string.IsNullOrEmpty(selectedAccountNo);
 }
 
-<div class="transaction-container">
-    <div class="transaction-card">
-        <h2>OKbkm Bank</h2>
-        <h3>Hesap İşlemleri</h3>
+<div class="main-container">
+    <div class="balance-box">
+        <h2>Hesap Seç</h2>
 
-        <form asp-action="Index" asp-controller="Transactions" method="post">
-            <!-- Hesap No -->
-            <div class="form-group">
-                <label>Hesap Numarası</label>
-                <input asp-for="AccountNo" name="AccountNo" class="form-control" placeholder="9 haneli hesap numarası" />
-                <span asp-validation-for="AccountNo" class="text-danger"></span>
-            </div>
+        <form method="get" asp-action="Index" asp-controller="Transactions">
+            <select class="form-control" name="selectedAccountNo" onchange="this.form.submit()">
+                @* "Hesap Seçiniz" default item *@
+                @if (string.IsNullOrEmpty(selectedAccountNo))
+                {
+                    <option value="" disabled selected>Hesap Seçiniz</option>
+                }
+                else
+                {
+                    <option value="" disabled>Hesap Seçiniz</option>
+                }
 
-            <!-- İşlem Türü -->
-            <div class="form-group">
-                <label>İşlem Türü</label>
-                <select asp-for="TransactionType" class="form-control" id="transactionType">
-                    <option value="Deposit">Para Yatırma</option>
-                    <option value="Withdrawal">Para Çekme</option>
-                    <option value="Transfer">Transfer</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="receiverField" style="display: none;">
-                <label>Alıcı Hesap Numarası</label>
-                <input asp-for="ReceiverAccountNo" class="form-control" placeholder="Alıcı hesap numarası" />
-                <span asp-validation-for="ReceiverAccountNo" class="text-danger"></span>
-            </div>
-            
-
-            <!-- Tutar -->
-            <div class="form-group">
-                <label>Tutar</label>
-                <input asp-for="Total" type="number" step="0.01" class="form-control" />
-                <span asp-validation-for="Total" class="text-danger"></span>
-            </div>
-
-            <!-- Açıklama -->
-            <div class="form-group">
-                <label>Açıklama</label>
-                <textarea asp-for="Description" class="form-control" placeholder="İsteğe bağlı"></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary">İşlemi Tamamla</button>
+                @* Kullanıcı hesapları *@
+                @foreach (var acc in accounts)
+                {
+                    var isSelected = acc.AccountNo == selectedAccountNo;
+                    <option value="@acc.AccountNo" selected="@(isSelected ? "selected" : null)">
+                        @acc.CardType - @acc.AccountNo
+                    </option>
+                }
+            </select>
         </form>
+
+        <h2>Hesaptaki Tutar</h2>
+        <p>@selectedBalance ₺</p>
     </div>
+
+    <div class="button-group">
+        <a href="@Url.Action("Withdraw", "Transactions", new { selectedAccountNo = ViewBag.SelectedAccountNo })" class="action-btn">WITHDRAW</a>
+        <a href="@Url.Action("Deposit", "Transactions", new { selectedAccountNo = ViewBag.SelectedAccountNo })" class="action-btn">DEPOSIT</a>
+        <a href="@Url.Action("Transfer", "Transactions", new { selectedAccountNo = ViewBag.SelectedAccountNo })" class="action-btn">TRANSFER</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="success-message">@TempData["Success"]</div>
+    }
 </div>
 
-<!-- ✅ Script: Transfer seçilince alıcı alanı gözüksün -->
-@section Scripts {
-    <script>
-        const transactionType = document.getElementById("transactionType");
-        const receiverField = document.getElementById("receiverField");
-
-        function toggleReceiverField() {
-            if (transactionType.value === "Transfer") {
-                receiverField.style.display = "block";
-            } else {
-                receiverField.style.display = "none";
-            }
-        }
-
-        // Sayfa yüklendiğinde kontrol et
-        window.addEventListener("load", toggleReceiverField);
-        transactionType.addEventListener("change", toggleReceiverField);
-    </script>
-
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-}
-
-<!-- ✅ Stil -->
 <style>
     body {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #a18cd1, #fbc2eb);
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
     }
 
-    .transaction-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 90vh;
-    }
-
-    .transaction-card {
-        width: 400px;
-        padding: 25px;
+    .main-container {
+        max-width: 700px;
+        margin: 60px auto;
+        padding: 30px;
         background: white;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
         text-align: center;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
 
-    .form-group {
-        margin: 15px 0;
-        text-align: left;
+    .balance-box {
+        padding: 20px;
+        margin-bottom: 40px;
+        border: 2px dashed #764ba2;
+        border-radius: 12px;
+        background: #f9f9f9;
     }
 
     .form-control {
         width: 100%;
         padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        margin-bottom: 20px;
+        font-size: 16px;
     }
 
-    .btn-primary {
-        width: 100%;
-        padding: 10px;
+    .balance-box h2 {
+        margin-bottom: 10px;
+        color: #4a47a3;
+    }
+
+    .balance-box p {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .action-btn {
         background: #4a47a3;
         color: white;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+        padding: 20px 40px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 20px;
         transition: 0.3s;
     }
 
-        .btn-primary:hover {
-            background: #3a36a3;
+        .action-btn:hover {
+            background: #3733a3;
         }
 
-    .text-danger {
-        font-size: 13px;
-        color: red;
+    .success-message {
+        margin-top: 30px;
+        background: #d4edda;
+        color: #155724;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
     }
 </style>

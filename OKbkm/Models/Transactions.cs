@@ -8,8 +8,8 @@ namespace OKbkm.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Hesap numarası zorunludur.")]
-        [RegularExpression(@"^\d{9}$", ErrorMessage = "Hesap numarası 9 haneli olmalıdır.")]
-        public int AccountNo { get; set; }
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "Hesap numarası 12 haneli olmalıdır.")]
+        public string AccountNo { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "Toplam tutar negatif olamaz.")]
         public decimal Total { get; set; }
@@ -33,6 +33,7 @@ namespace OKbkm.Models
 
         [Required(ErrorMessage = "İşlem türü zorunludur.")]
         public string TransactionType { get; set; } // Para Yatırma, Çekme, Transfer
-        public int? ReceiverAccountNo { get; set; }
+
+        public string? ReceiverAccountNo { get; set; } // Transfer için zorunlu
     }
 }

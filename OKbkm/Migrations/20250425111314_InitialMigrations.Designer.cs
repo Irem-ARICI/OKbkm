@@ -12,18 +12,50 @@ using OKbkm;
 namespace OKbkm.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250324122633_AddLogindateToLogin2")]
-    partial class AddLogindateToLogin2
+    [Migration("20250425111314_InitialMigrations")]
+    partial class InitialMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("OKbkm.Models.Account", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("AccountNo")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("CardType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TC")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Accounts");
+                });
 
             modelBuilder.Entity("OKbkm.Models.AccountCreate", b =>
                 {
@@ -33,12 +65,20 @@ namespace OKbkm.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("AccountNo")
-                        .HasColumnType("integer");
+                    b.Property<string>("AccountNo")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("CardType")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("TC")
                         .IsRequired()
@@ -46,7 +86,7 @@ namespace OKbkm.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("ACreates");
+                    b.ToTable("AccountCreate");
                 });
 
             modelBuilder.Entity("OKbkm.Models.Login", b =>
@@ -82,7 +122,6 @@ namespace OKbkm.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Mail")
@@ -95,11 +134,15 @@ namespace OKbkm.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("TC")
                         .IsRequired()
@@ -112,36 +155,46 @@ namespace OKbkm.Migrations
 
             modelBuilder.Entity("OKbkm.Models.TransactionHistory", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AccountNo")
-                        .HasColumnType("integer");
+                    b.Property<string>("AccountNo")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
 
-                    b.Property<decimal>("Balance")
+                    b.Property<decimal>("BalanceAfter")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TransactionAmount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("id");
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.ToTable("THistories");
                 });
 
             modelBuilder.Entity("OKbkm.Models.Transactions", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AccountNo")
-                        .HasColumnType("integer");
+                    b.Property<string>("AccountNo")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
@@ -149,8 +202,22 @@ namespace OKbkm.Migrations
                     b.Property<decimal>("Deposit")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ReceiverAccountNo")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Transfer")
                         .HasColumnType("numeric");
@@ -158,7 +225,7 @@ namespace OKbkm.Migrations
                     b.Property<decimal>("Withdrawal")
                         .HasColumnType("numeric");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Transactions");
                 });

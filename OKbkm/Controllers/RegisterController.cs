@@ -22,22 +22,22 @@ namespace OKbkm.Controllers
         [HttpPost]
         public IActionResult Index(Register model)
         {
-            if (!ModelState.IsValid)
-            {
-                var allErrors = ModelState.SelectMany(kvp => kvp.Value.Errors)
-                                           .Select(e => e.ErrorMessage)
-                                           .ToList();
-
-                ViewBag.Errors = allErrors;
-                return View(model);
-            }
-
             //if (!ModelState.IsValid)
             //{
-            //    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-            //    ViewBag.Errors = errors; // View’a gönder
+            //    var allErrors = ModelState.SelectMany(kvp => kvp.Value.Errors)
+            //                               .Select(e => e.ErrorMessage)
+            //                               .ToList();
+
+            //    ViewBag.Errors = allErrors;
             //    return View(model);
             //}
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                ViewBag.Errors = errors; // View’a gönder
+                return View(model);
+            }
 
             var existingUser = _context.Registers.FirstOrDefault(u => u.TC == model.TC);
             if (existingUser != null)

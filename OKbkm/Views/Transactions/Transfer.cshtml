@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "Para Transferi";
+    var selectedAccountNo = ViewBag.SelectedAccountNo as string;
+}
+
+<div class="main-container">
+    <h2>Gönderilecek Tutar</h2>
+    <div id="amountDisplay">0 ₺</div>
+
+    <form method="post" asp-action="Transfer">
+        <input type="hidden" name="selectedAccountNo" value="@selectedAccountNo" />
+        <input type="hidden" id="amountInput" name="amount" value="0" />
+
+        <!-- Alıcı Hesap No -->
+        <div class="receiver-section">
+            <input type="text" name="receiverAccountNo" placeholder="Alıcı Hesap Numarası" required class="form-control" />
+        </div>
+
+        <!-- Tutar Ekleme -->
+        <div class="custom-amount">
+            <label>Diğer:</label>
+            <input type="number" id="customInput" class="form-control" placeholder="Tutar girin" />
+            <button type="button" onclick="addCustomAmount()">Ekle</button>
+        </div>
+
+        <!-- Gönder Butonu -->
+        <button type="submit" class="submit-btn">Gönder</button>
+    </form>
+
+    <a href="/Transactions/Index" class="back-link">İşlem Menüsüne Dön</a>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+        font-family: Arial, sans-serif;
+    }
+
+    .main-container {
+        max-width: 700px;
+        margin: 50px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    #amountDisplay {
+        font-size: 36px;
+        font-weight: bold;
+        margin: 15px 0 30px;
+        color: #4a47a3;
+    }
+
+    .receiver-section {
+        margin-bottom: 25px;
+    }
+
+        .receiver-section input {
+            padding: 12px;
+            width: 60%;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+    .custom-amount {
+        margin-bottom: 25px;
+    }
+
+        .custom-amount input {
+            padding: 10px;
+            width: 150px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .custom-amount button {
+            padding: 10px 20px;
+            background-color: #5c4db1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+    .submit-btn {
+        background: #e91e63;
+        color: white;
+        padding: 14px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        width: 100%;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .submit-btn:hover {
+            background: #c2185b;
+        }
+
+    .back-link {
+        display: block;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #4a47a3;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    let total = 0;
+
+    function addCustomAmount() {
+        const val = parseFloat(document.getElementById("customInput").value);
+        if (!isNaN(val) && val > 0) {
+            total += val;
+            updateDisplay();
+            document.getElementById("customInput").value = "";
+        }
+    }
+
+    function updateDisplay() {
+        document.getElementById("amountDisplay").textContent = total.toLocaleString() + " ₺";
+        document.getElementById("amountInput").value = total;
+    }
+</script>
