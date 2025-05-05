@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Kullanıcı Paneli";
+    var userName = ViewBag.UserName;
+}
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="/UserPanel/GoToCreateAccount">Account Create</a>
+            <a href="/Transactions/Index">Transaction</a>
+            <a href="/UserPanel/Logout">Çıkış Yap</a>
+        </div>
+    </div>
+    <div class="right">
+        <span>Hoş geldiniz, @userName!</span>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <h1>BKM İRO'ya Hoş Geldiniz</h1>
+    <div class="info-row">
+        <div class="info-box">
+            <h2>Banka Hakkında</h2>
+            <p>OKbkm Bank, dijital finans dünyasında yenilikçi çözümler sunan bir platformdur. Müşteri odaklı yaklaşımıyla internet ve mobil bankacılığı kolaylaştırır.</p>
+        </div>
+        <div class="info-box">
+            <h2>Detaylı Bilgiler</h2>
+            <p>Güvenli altyapısı, gelişmiş ödeme sistemleri ve kullanıcı dostu arayüzüyle OKbkm Bank size en iyi deneyimi sunar.</p>
+        </div>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #343a40;
+        color: white;
+        padding: 15px 30px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    .topbar .right {
+        padding-right: 50px;
+    }
+
+    .topbar .right span {
+        font-size: 16px;
+        color: #ffffffcc;
+        padding-right: 20px;
+    }
+
+    .left {
+        position: relative;
+    }
+
+    .menu-toggle {
+        font-size: 22px;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        background-color: #343a40;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+        .dropdown-menu a {
+            display: block;
+            color: white;
+            padding: 8px 10px;
+            text-decoration: none;
+        }
+
+            .dropdown-menu a:hover {
+                background-color: #495057;
+            }
+
+    .right span {
+        font-size: 16px;
+    }
+
+    .main-content {
+        padding: 100px 30px 30px 30px;
+        text-align: center;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .info-box {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        width: 400px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        text-align: left;
+    }
+
+        .info-box h2 {
+            color: #d63384;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+</style>
+
+<!-- JS -->
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById("dropdownMenu");
+        menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    }
+
+    // Menü dışına tıklanınca kapanması için
+    document.addEventListener("click", function (event) {
+        var menu = document.getElementById("dropdownMenu");
+        var button = document.querySelector(".menu-toggle");
+        if (!menu.contains(event.target) && !button.contains(event.target)) {
+            menu.style.display = "none";
+        }
+    });
+</script>

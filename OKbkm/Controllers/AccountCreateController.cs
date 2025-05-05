@@ -1,91 +1,93 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OKbkm.Models;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 
 namespace OKbkm.Controllers
 {
     public class AccountCreateController : Controller
     {
-        private static List<AccountCreate> accounts = new List<AccountCreate>(); // Hesapları saklayan liste
-        private static List<Register> users = new List<Register> // Kullanıcıları saklayan liste
+        private readonly Context _context;
+
+        public AccountCreateController(Context context)
         {
-            new Register { id = 1, TC = "12345678901", NameUsername = "Ahmet Yılmaz", Mail = "ahmet@example.com", Password = "1234", PhoneNumber = "555-1234", Address = "İstanbul" },
-            new Register { id = 2, TC = "98765432109", NameUsername = "Merve Aksoy", Mail = "merve@example.com", Password = "5678", PhoneNumber = "555-5678", Address = "Ankara" }
-        };
+            _context = context;
+        }
 
         [HttpGet]
         public IActionResult Index()
         {
-            return View(accounts);
+            var userTC = HttpContext.Session.GetString("UserTC");
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (string.IsNullOrEmpty(userTC))
+                return RedirectToAction("Index", "Login");
+
+            ViewBag.UserName = userName;
+
+            // ✅ Account tablosunu kullanıyoruz artık!
+            var userAccounts = _context.Accounts
+                .Where(a => a.TC == userTC)
+                .ToList();
+
+            return View(userAccounts);
         }
 
         [HttpPost]
-        public IActionResult Create(AccountCreate model)
+        public IActionResult Index([Bind("CardType")] Account model)    //         public IActionResult Index([Bind("CardType")] Account model)
         {
-            if (ModelState.IsValid)
+            var userTC = HttpContext.Session.GetString("UserTC");
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (string.IsNullOrEmpty(userTC))
+                return RedirectToAction("Index", "Login");
+
+            // Aynı TC + KartTipi var mı kontrol et
+            var hasSameCard = _context.Accounts.Any(a => a.TC == userTC && a.CardType == model.CardType);
+            if (hasSameCard)
             {
-                // Kullanıcının TC numarasına göre NameUsername'ı bul
-                var user = users.FirstOrDefault(u => u.TC == model.TC);
-                if (user != null)
-                {
-                    model.AccountNo = GenerateAccountNumber(); // 10 basamaklı hesap numarası oluştur
-                    accounts.Add(model);
-                    ViewBag.NameUsername = user.NameUsername; // NameUsername'ı ViewBag'e ekleyerek Index.cshtml'de kullanacağız
-                }
-                return RedirectToAction("Index");
+                ViewBag.UserName = userName;
+                ViewBag.Error = "Aynı kart tipinden birden fazla hesap oluşturamazsınız.";
+
+                var existingAccounts = _context.Accounts
+                    .Where(a => a.TC == userTC)
+                    .ToList();
+
+                return View(existingAccounts);
             }
-            return View("Index", accounts);
+
+            //if (ModelState.IsValid)
+            //{
+            model.TC = userTC;
+            model.AccountNo = GenerateAccountNumber().ToString();
+                model.Balance = 0.00m;
+
+                _context.Accounts.Add(model);
+                _context.SaveChanges();
+            //}
+
+            ViewBag.UserName = userName;
+
+            var userAccounts = _context.Accounts
+                .Where(a => a.TC == userTC)
+                .ToList();
+
+            //return View(userAccounts);
+             return RedirectToAction("Index");
         }
 
-        private int GenerateAccountNumber()
+        //private int GenerateAccountNumber()
+        //{
+        //    Random rnd = new Random();
+        //    return rnd.Next(100000000, 999999999);
+        //}
+
+        private string GenerateAccountNumber()
         {
-            Random random = new Random();
-            return random.Next(1000000000, 1999999999); // 10 basamaklı hesap no oluştur
+            Random rnd = new Random();
+            return string.Join("", Enumerable.Range(0, 12).Select(i => rnd.Next(0, 10)));
         }
+
+
     }
 }
-
-
-
-
-
-
-//using Microsoft.AspNetCore.Mvc;
-//using OKbkm.Models;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-
-//namespace OKbkm.Controllers
-//{
-//    public class AccountCreateController : Controller
-//    {
-//        private static List<AccountCreate> accounts = new List<AccountCreate>();
-
-//        [HttpGet]
-//        public IActionResult Index()
-//        {
-//            return View(accounts);
-//        }
-
-//        [HttpPost]
-//        public IActionResult Create(AccountCreate model)
-//        {
-//            if (ModelState.IsValid)
-//            {
-//                model.AccountNo = GenerateAccountNumber(); // 10 basamaklı hesap numarası oluştur
-//                accounts.Add(model);
-//                return RedirectToAction("Index");
-//            }
-//            return View("Index", accounts);
-//        }
-
-//        private int GenerateAccountNumber()
-//        {
-//            Random random = new Random();
-//            return random.Next(1000000000, 1999999999); // 10 basamaklı hesap no oluştur
-//        }
-//    }
-//}

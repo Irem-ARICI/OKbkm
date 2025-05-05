@@ -1,114 +1,125 @@
-﻿@model List<OKbkm.Models.AccountCreate>
-
+﻿@model List<OKbkm.Models.Account> 
 @{
-    ViewData["Title"] = "Account Create Page";
+    ViewData["Title"] = "Yeni Hesap Oluştur";
+    var userName = ViewBag.UserName as string;
 }
 
 <div class="account-container">
-    <h1>Account Create Page</h1>
+    <h2>Hoş geldiniz, <span class="pink">@userName</span>! 👋</h2>
+    <h1>Yeni Hesap Oluştur</h1>
 
-    <form asp-action="Create" method="post" class="account-form">
+    <form asp-action="Index" asp-controller="AccountCreate" method="post" class="account-form">
+        @if (ViewBag.Error != null)
+        {
+            <div style="color: red; margin-bottom: 10px; font-weight: bold;">
+                @ViewBag.Error
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div style="color:red; font-weight:bold;">
+                @TempData["Error"]
+            </div>
+        }
         <div class="form-group">
-            <label for="tc">T.C. Kimlik No:</label>
-            <input type="text" id="tc" name="TC" class="form-control" required oninput="fetchUsername()">
-        </div>
-        <div class="form-group">
-            <label for="cardType">Kart Tipi:</label>
-            <select id="cardType" name="CardType" class="form-control">
+            <label>Kart Tipi:</label>
+            <select name="CardType" class="form-control" required>
+                <option value="">Kart Seçin</option>
                 <option value="Kredi Kartı">Kredi Kartı</option>
                 <option value="Banka Kartı">Banka Kartı</option>
                 <option value="Öğrenci Kartı">Öğrenci Kartı</option>
                 <option value="Genç Kart">Genç Kart</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Ekle</button>
+        <button type="submit" class="btn-primary">Ekle</button>
     </form>
 
-    <h3>Mevcut hesaplarınız:</h3>
+    <h3>Mevcut Hesaplarınız:</h3>
     <table class="account-table">
         <thead>
             <tr>
-                <th>Ad Soyad</th>
+                <th>TC Kimlik</th>
                 <th>Kart Tipi</th>
-                <th>Hesap Toplamı</th>
+                <th>Hesap No</th>
+                <th>Bakiye (₺)</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var account in Model)
             {
-                    <tr>
-                        <td>@account.TC</td> <!-- Kullanıcının TC'ye göre adını gösteriyoruz -->
-                        <td>@account.CardType</td>
-                        <td>@account.AccountNo</td>
-                    </tr>
+                <tr>
+                    <td>@account.TC</td>
+                    <td>@account.CardType</td>
+                    <td>@account.AccountNo</td>
+                    <td>@account.Balance.ToString("N2")</td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
 
-<script>
-    function fetchUsername() {
-        var tc = document.getElementById("tc").value;
-        var nameInput = document.getElementById("name");
-
-        var users = {
-            "12345678901": "Ahmet Yılmaz",
-            "98765432109": "Merve Aksoy"
-        };
-
-        nameInput.value = users[tc] || "";
-    }
-</script>
-
 <style>
     body {
         background: linear-gradient(135deg, #667eea, #764ba2);
         font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
     }
+
     .account-container {
-        width: 100%;
         max-width: 600px;
-        margin: 50px auto;
-        padding: 20px;
+        margin: 60px auto;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         text-align: center;
     }
-    .account-table {
-        width: 100%;
-        margin-bottom: 20px;
-        border-collapse: collapse;
+
+    h2 span.pink {
+        color: #d63384;
     }
-    .account-table th, .account-table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-    }
+
     .form-group {
         margin-bottom: 15px;
         text-align: left;
     }
+
     .form-control {
         width: 100%;
         padding: 10px;
         margin-top: 5px;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        border-radius: 5px;
     }
+
     .btn-primary {
-        width: 100%;
-        padding: 10px;
-        background: #007bff;
-        border: none;
+        background-color: #007bff;
         color: white;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
         font-size: 16px;
         cursor: pointer;
-        border-radius: 4px;
     }
-    .btn-primary:hover {
-        background: #0056b3;
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .account-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
     }
+
+        .account-table th, .account-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .account-table th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
 </style>
