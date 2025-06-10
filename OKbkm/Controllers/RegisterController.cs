@@ -51,8 +51,8 @@ namespace OKbkm.Controllers
 
             if (result > 0)
             {
-                TempData["Success"] = "Kayıt başarıyla tamamlandı!";
-                return RedirectToAction("Welcome");
+                //TempData["Success"] = "Kayıt başarıyla tamamlandı!";
+                return RedirectToAction("Index", "Login");  //kayıt işleminden sonra login indexine yönlendirmekte
             }
 
             ModelState.AddModelError("", "Kayıt sırasında bir hata oluştu.");

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OKbkm.Models;
+using OKbkm.Services;
 using System.Linq;
 
 namespace OKbkm.Controllers
@@ -7,10 +8,12 @@ namespace OKbkm.Controllers
     public class TransactionsController : Controller
     {
         private readonly Context _context;
+        private readonly KafkaProducerService _kafka;
 
-        public TransactionsController(Context context)
+        public TransactionsController(Context context, KafkaProducerService kafka)
         {
             _context = context;
+            _kafka = kafka;
         }
 
         [HttpGet]
@@ -44,7 +47,7 @@ namespace OKbkm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Deposit(decimal amount, string selectedAccountNo)
+        public async Task<IActionResult> Deposit(decimal amount, string selectedAccountNo)
         {
             var userTC = HttpContext.Session.GetString("UserTC");
             var account = _context.Accounts.FirstOrDefault(a => a.TC == userTC && a.AccountNo == selectedAccountNo);
@@ -66,6 +69,16 @@ namespace OKbkm.Controllers
             _context.Add(history);
 
             _context.SaveChanges();
+
+            // Kafka'ya mesaj gönder
+            await _kafka.SendMessageAsync("deposit-topic", new TransactionEvent
+            {
+                AccountNo = account.AccountNo,
+                Amount = amount,
+                BalanceAfter = account.Balance,
+                Type = "Deposit",
+                Timestamp = DateTime.UtcNow
+            });
 
             TempData["Success"] = "Para başarıyla yatırıldı.";
             return RedirectToAction("Index", new { selectedAccountNo });
@@ -120,27 +133,6 @@ namespace OKbkm.Controllers
             return RedirectToAction("Index", new { selectedAccountNo });
         }
 
-
-        //[HttpGet]
-        //public IActionResult Transfer()
-        //{
-        //    var userTC = HttpContext.Session.GetString("UserTC");
-
-        //    if (string.IsNullOrEmpty(userTC))
-        //        return RedirectToAction("Index", "Login");
-
-        //    var accounts = _context.Accounts
-        //        .Where(a => a.TC == userTC)
-        //        .ToList();
-
-        //    ViewBag.Accounts = accounts;
-
-        //    var selectedAccount = accounts.FirstOrDefault();
-        //    ViewBag.SelectedAccountNo = selectedAccount?.AccountNo;
-
-        //    return View();
-        //}
-
         [HttpGet]
         public IActionResult Transfer(string selectedAccountNo)
         {
@@ -165,47 +157,6 @@ namespace OKbkm.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public IActionResult Transfer(string receiverAccountNo, decimal amount, string selectedAccountNo)
-        //{
-        //    var userTC = HttpContext.Session.GetString("UserTC");
-
-        //    var senderAccount = _context.Accounts.FirstOrDefault(a => a.TC == userTC && a.AccountNo == selectedAccountNo);
-        //    var receiverAccount = _context.Accounts.FirstOrDefault(a => a.AccountNo == receiverAccountNo);
-
-        //    if (senderAccount == null || receiverAccount == null)
-        //    {
-        //        ModelState.AddModelError("", "Gönderen veya alıcı hesap bulunamadı.");
-        //        return View();
-        //    }
-
-        //    if (senderAccount.Balance < amount)
-        //    {
-        //        ModelState.AddModelError("", "Yetersiz bakiye.");
-        //        return View();
-        //    }
-
-        //    senderAccount.Balance -= amount;
-        //    receiverAccount.Balance += amount;
-
-        //    _context.Update(senderAccount);
-        //    _context.Update(receiverAccount);
-
-        //    var history = new TransactionHistory
-        //    {
-        //        AccountNo = senderAccount.AccountNo,
-        //        TransactionAmount = amount,
-        //        BalanceAfter = senderAccount.Balance,
-        //        TransactionType = "Transfer",
-        //        TransactionDate = DateTime.UtcNow
-        //    };
-
-        //    _context.Add(history);
-        //    _context.SaveChanges();
-
-        //    TempData["Success"] = "Para başarıyla transfer edildi.";
-        //    return RedirectToAction("Index", new { selectedAccountNo });
-        //}
 
         [HttpPost]
         public IActionResult Transfer(string receiverAccountNo, decimal amount, string selectedAccountNo)

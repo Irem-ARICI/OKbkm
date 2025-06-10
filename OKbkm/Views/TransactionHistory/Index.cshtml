@@ -1,5 +1,83 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<OKbkm.Models.TransactionHistory>
 @{
+    ViewData["Title"] = "İşlem Geçmişi";
+    var accountNo = ViewBag.AccountNo as string;
+    var accounts = ViewBag.Accounts as List<OKbkm.Models.Account> ?? new List<OKbkm.Models.Account>();
+    var isPlaceholderSelected = string.IsNullOrEmpty(accountNo);
 }
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">İşlem Geçmişi</h2>
+
+    <form method="post" asp-action="Index" class="mb-4 text-center">
+        <select name="selectedAccountNo" class="form-control w-50 d-inline-block" required>
+            <option value="" disabled selected="@isPlaceholderSelected" hidden>Hesap Seçiniz</option>
+
+            @foreach (var acc in accounts)
+            {
+                var isSelected = acc.AccountNo == accountNo;
+                <option value="@acc.AccountNo" selected="@isSelected">@acc.CardType - @acc.AccountNo</option>
+            }
+        </select>
+
+        <button type="submit" class="btn btn-primary ml-2">Görüntüle</button>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>İşlem Türü</th>
+                    <th>Tutar</th>
+                    <th>Kalan Bakiye</th>
+                    <th>Açıklama</th>
+                    <th>Tarih</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.TransactionType</td>
+                        <td>@item.TransactionAmount.ToString("N2") ₺</td>
+                        <td>@item.BalanceAfter.ToString("N2") ₺</td>
+                        <td>@(string.IsNullOrEmpty(item.Description) ? "-" : item.Description)</td>
+                        <td>@item.TransactionDate.ToLocalTime().ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (!isPlaceholderSelected)
+    {
+        <p class="text-center text-muted">Bu hesaba ait işlem bulunamadı.</p>
+    }
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index", "Transactions", new { selectedAccountNo = accountNo })" class="btn btn-secondary">İşlem Menüsüne Dön</a>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #fbc2eb, #a18cd1);
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        color: #4a47a3;
+    }
+
+    table th, table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
