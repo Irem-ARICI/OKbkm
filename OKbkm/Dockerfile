@@ -19,8 +19,8 @@ RUN dotnet build "OKbkm.csproj" -c $BUILD_CO	NFIGURATION -o /app/build
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "OKbkm.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-COPY OKbkm/wwwroot /app/publish/wwwroot
-RUN ls -la /app/publish/wwwroot		#  Yayınlanan içeriği kontrol et
+#COPY OKbkm/wwwroot /app/publish/wwwroot	//dockerda image olusturamadik diye bunu commentledik
+#RUN ls -la /app/publish/wwwroot		#  Yayınlanan içeriği kontrol et
 
 # 4. Final imaj
 FROM base AS final
