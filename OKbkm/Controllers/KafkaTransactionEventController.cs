@@ -16,9 +16,6 @@ namespace OKbkm.Controllers
             _kafka = kafka;
         }
 
-        /// <summary>
-        /// Kafka'ya örnek işlem mesajı gönderir.
-        /// </summary>
         [HttpPost("send")]
         public async Task<IActionResult> SendTransactionEvent([FromBody] TransactionEvent evt)
         {

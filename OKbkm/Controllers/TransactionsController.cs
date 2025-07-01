@@ -95,7 +95,7 @@ namespace OKbkm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Withdraw(decimal amount, string selectedAccountNo)
+        public async Task<IActionResult> Withdraw(decimal amount, string selectedAccountNo)
         {
             var userTC = HttpContext.Session.GetString("UserTC");
 
@@ -128,6 +128,15 @@ namespace OKbkm.Controllers
 
             _context.Add(history);
             _context.SaveChanges();
+
+            await _kafka.SendMessageAsync("withdraw-topic", new TransactionEvent
+            {
+                AccountNo = account.AccountNo,
+                Amount = amount,
+                BalanceAfter = account.Balance,
+                Type = "Withdraw",
+                Timestamp = DateTime.UtcNow
+            });
 
             TempData["Success"] = "Para başarıyla çekildi.";
             return RedirectToAction("Index", new { selectedAccountNo });
