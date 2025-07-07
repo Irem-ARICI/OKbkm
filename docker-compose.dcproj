@@ -15,8 +15,5 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="kafka1.properties" />
-    <None Include="kafka2.properties" />
-    <None Include="kafka3.properties" />
   </ItemGroup>
 </Project>
