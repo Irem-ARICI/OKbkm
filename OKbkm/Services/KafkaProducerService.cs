@@ -32,7 +32,8 @@ namespace OKbkm.Services
 {
     public class KafkaProducerService
     {
-        private readonly string _bootstrapServers = "3.121.208.190:9092";
+        //private readonly string _bootstrapServers = "3.121.208.190:9092";
+        private readonly string _bootstrapServers = "kafka1:9092";
 
         // Kafka topic varsa geç, yoksa oluştur
         public async Task CreateTopicIfNotExistsAsync(string topicName, int numPartitions = 1, short replicationFactor = 1)
