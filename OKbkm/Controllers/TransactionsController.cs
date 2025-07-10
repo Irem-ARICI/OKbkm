@@ -269,7 +269,21 @@ namespace OKbkm.Controllers
                 Timestamp = DateTime.UtcNow
             });
         }
+        //private async Task SendKafkaTransaction(string topic, string type, string accountNo, decimal amount, decimal balanceAfter)
+        //{
+        //    var transactionEvent = new TransactionEvent
+        //    {
+        //        AccountNo = accountNo,
+        //        Amount = amount,
+        //        BalanceAfter = balanceAfter,
+        //        Type = type,
+        //        Timestamp = DateTime.UtcNow
+        //    };
 
+        //    var message = JsonConvert.SerializeObject(transactionEvent);
+
+        //    await _kafkaProducer.SendAsync(topic, message);
+        //}
 
 
     }
