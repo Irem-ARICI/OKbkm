@@ -85,15 +85,13 @@
       - kafka2
       - kafka3
     entrypoint: ["/bin/sh", "-c"]
-    command: |
-      "
+    command:
       kafka-topics --bootstrap-server kafka1:9092 \
         --create --if-not-exists --topic deposit --replication-factor 3 --partitions 1 &&
       kafka-topics --bootstrap-server kafka1:9092 \
         --create --if-not-exists --topic withdraw --replication-factor 3 --partitions 1 &&
       kafka-topics --bootstrap-server kafka1:9092 \
         --create --if-not-exists --topic transfer --replication-factor 3 --partitions 1
-      "
 
   akhq:
     image: tchiotludo/akhq:0.24.0
