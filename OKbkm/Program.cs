@@ -105,19 +105,20 @@ Task.Run(async () =>
 {
     try
     {
+        Console.WriteLine("[Kafka] Topic oluşturma işlemi BAŞLIYOR...");
+
         using var scope = app.Services.CreateScope();
-
-        var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
-        dbContext.Database.Migrate();
-
         var kafka = scope.ServiceProvider.GetRequiredService<KafkaProducerService>();
+
         await kafka.CreateTopicIfNotExistsAsync("deposit-topic");
         await kafka.CreateTopicIfNotExistsAsync("withdraw-topic");
         await kafka.CreateTopicIfNotExistsAsync("transfer-topic");
+
+        Console.WriteLine("[Kafka] Topic oluşturma işlemi TAMAMLANDI.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Kafka] Topic oluşturma hatası: {ex.Message}");
+        Console.WriteLine($"[Kafka][HATA] Topic oluşturulamadı: {ex.Message}");
     }
 }).Wait();
 
