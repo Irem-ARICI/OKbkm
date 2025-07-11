@@ -12,7 +12,10 @@ namespace OKbkm.Services
         public KafkaProducerService(IConfiguration configuration)
         {
             // Docker ortamı için environment variable veya appsettings'ten alınır
-            _bootstrapServers = configuration["KAFKA__BOOTSTRAP__SERVERS"] ?? "kafka1:9092,kafka2:9092,kafka3:9092";
+            //_bootstrapServers = configuration["KAFKA__BOOTSTRAP__SERVERS"] ?? "kafka1:9092,kafka2:9092,kafka3:9092";
+            _bootstrapServers = configuration["Kafka:BootstrapServers"]
+                ?? configuration["KAFKA__BOOTSTRAP__SERVERS"]
+                ?? "kafka1:29092,kafka2:29092,kafka3:29092";
         }
 
         public async Task CreateTopicIfNotExistsAsync(string topicName, int numPartitions = 1, short replicationFactor = 1)
