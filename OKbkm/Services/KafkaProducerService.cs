@@ -18,6 +18,42 @@ namespace OKbkm.Services
                 ?? "kafka1:29092,kafka2:29092,kafka3:29092";
         }
 
+        //public async Task CreateTopicIfNotExistsAsync(string topicName, int numPartitions = 1, short replicationFactor = 1)
+        //{
+        //    var config = new AdminClientConfig { BootstrapServers = _bootstrapServers };
+
+        //    using var adminClient = new AdminClientBuilder(config).Build();
+
+        //    try
+        //    {
+        //        var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(10));
+        //        if (metadata.Topics.Any(t => t.Topic == topicName))
+        //        {
+        //            Console.WriteLine($"[Kafka] '{topicName}' topic'i zaten mevcut.");
+        //            return;
+        //        }
+
+        //        Console.WriteLine($"[Kafka] '{topicName}' topic'i oluşturuluyor...");
+        //        await adminClient.CreateTopicsAsync(new[]
+        //        {
+        //            new TopicSpecification
+        //            {
+        //                Name = topicName,
+        //                NumPartitions = numPartitions,
+        //                ReplicationFactor = replicationFactor
+        //            }
+        //        });
+        //        Console.WriteLine($"[Kafka] '{topicName}' topic'i oluşturuldu.");
+        //    }
+        //    catch (CreateTopicsException ex) when (ex.Results[0].Error.Code == ErrorCode.TopicAlreadyExists)
+        //    {
+        //        Console.WriteLine($"[Kafka] '{topicName}' zaten mevcut (Exception ile yakalandı).");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"[Kafka] Topic oluşturulurken hata: {ex.Message}");
+        //    }
+        //}
         public async Task CreateTopicIfNotExistsAsync(string topicName, int numPartitions = 1, short replicationFactor = 1)
         {
             var config = new AdminClientConfig { BootstrapServers = _bootstrapServers };
@@ -26,32 +62,45 @@ namespace OKbkm.Services
 
             try
             {
-                var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(10));
-                if (metadata.Topics.Any(t => t.Topic == topicName))
+                var metadata = adminClient.GetMetadata(topicName, TimeSpan.FromSeconds(10));
+                var topicExists = metadata.Topics.Any(t => t.Topic == topicName && !t.Error.IsError);
+
+                if (topicExists)
                 {
                     Console.WriteLine($"[Kafka] '{topicName}' topic'i zaten mevcut.");
                     return;
                 }
 
                 Console.WriteLine($"[Kafka] '{topicName}' topic'i oluşturuluyor...");
+
                 await adminClient.CreateTopicsAsync(new[]
                 {
-                    new TopicSpecification
-                    {
-                        Name = topicName,
-                        NumPartitions = numPartitions,
-                        ReplicationFactor = replicationFactor
-                    }
-                });
+            new TopicSpecification
+            {
+                Name = topicName,
+                NumPartitions = numPartitions,
+                ReplicationFactor = replicationFactor
+            }
+        });
+
                 Console.WriteLine($"[Kafka] '{topicName}' topic'i oluşturuldu.");
             }
-            catch (CreateTopicsException ex) when (ex.Results[0].Error.Code == ErrorCode.TopicAlreadyExists)
+            catch (CreateTopicsException ex)
             {
-                Console.WriteLine($"[Kafka] '{topicName}' zaten mevcut (Exception ile yakalandı).");
+                var error = ex.Results.FirstOrDefault()?.Error;
+
+                if (error?.Code == ErrorCode.TopicAlreadyExists)
+                {
+                    Console.WriteLine($"[Kafka] '{topicName}' zaten mevcut (Exception ile yakalandı).");
+                }
+                else
+                {
+                    Console.WriteLine($"[Kafka][HATA] Topic oluşturulamadı: {error?.Reason ?? ex.Message}");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Kafka] Topic oluşturulurken hata: {ex.Message}");
+                Console.WriteLine($"[Kafka][HATA] Topic oluşturulurken genel hata: {ex.Message}");
             }
         }
 

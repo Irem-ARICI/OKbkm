@@ -177,6 +177,24 @@ public class Program
         var app = builder.Build();
 
         // Kafka Topic'lerini Uygulama Başlarken Oluştur
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    try
+        //    {
+        //        Console.WriteLine("[Kafka] Topic oluşturma işlemi BAŞLIYOR...");
+        //        var kafka = scope.ServiceProvider.GetRequiredService<KafkaProducerService>();
+
+        //        await kafka.CreateTopicIfNotExistsAsync("deposit-topic");
+        //        await kafka.CreateTopicIfNotExistsAsync("withdraw-topic");
+        //        await kafka.CreateTopicIfNotExistsAsync("transfer-topic");
+
+        //        Console.WriteLine("[Kafka] Topic oluşturma işlemi TAMAMLANDI.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"[Kafka][HATA] Topic oluşturulamadı: {ex.Message}");
+        //    }
+        //}
         using (var scope = app.Services.CreateScope())
         {
             try
@@ -193,8 +211,10 @@ public class Program
             catch (Exception ex)
             {
                 Console.WriteLine($"[Kafka][HATA] Topic oluşturulamadı: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
             }
         }
+
 
         // middleware pipeline
         app.UseStaticFiles();
