@@ -103,16 +103,23 @@ var app = builder.Build();
 // Kafka Topic'lerini Uygulama Başlarken Oluşturmak için yeni bir Task başlat
 Task.Run(async () =>
 {
-    using var scope = app.Services.CreateScope();
+    try
+    {
+        using var scope = app.Services.CreateScope();
 
-    var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
-    dbContext.Database.Migrate();
+        var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
+        dbContext.Database.Migrate();
 
-    var kafka = scope.ServiceProvider.GetRequiredService<KafkaProducerService>();
-    await kafka.CreateTopicIfNotExistsAsync("deposit-topic");
-    await kafka.CreateTopicIfNotExistsAsync("withdraw-topic");
-    await kafka.CreateTopicIfNotExistsAsync("transfer-topic");
-}).Wait(); // Main async olmadığı için burada bloklamamız gerek
+        var kafka = scope.ServiceProvider.GetRequiredService<KafkaProducerService>();
+        await kafka.CreateTopicIfNotExistsAsync("deposit-topic");
+        await kafka.CreateTopicIfNotExistsAsync("withdraw-topic");
+        await kafka.CreateTopicIfNotExistsAsync("transfer-topic");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Kafka] Topic oluşturma hatası: {ex.Message}");
+    }
+}).Wait();
 
 // middleware pipeline
 app.UseStaticFiles();
