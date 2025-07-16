@@ -70,15 +70,34 @@ namespace OKbkm.Controllers
 
             _context.SaveChanges();
 
-            // Kafka'ya mesaj gönder
-            await _kafka.SendMessageAsync("deposit-topic", new TransactionEvent
+            //// 🔸 Kafka mesajı
+            //await _kafka.ProduceAsync("deposit-topic", new
+            //{
+            //    UserTC = userTC,
+            //    AccountNo = account.AccountNo,
+            //    Amount = amount,
+            //    BalanceAfter = account.Balance,
+            //    TransactionType = "Deposit",
+            //    Date = DateTime.UtcNow
+            //});
+
+            try
             {
-                AccountNo = account.AccountNo,
-                Amount = amount,
-                BalanceAfter = account.Balance,
-                Type = "Deposit",
-                Timestamp = DateTime.UtcNow
-            });
+                await _kafka.ProduceAsync("deposit-topic", new
+                {
+                    UserTC = userTC,
+                    AccountNo = account.AccountNo,
+                    Amount = amount,
+                    BalanceAfter = account.Balance,
+                    TransactionType = "Deposit",
+                    Date = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                // 🔴 Basit loglama (gelişmiş log için Serilog veya ILogger kullanılabilir)
+                Console.WriteLine($"Kafka'ya mesaj gönderilemedi: {ex.Message}");
+            }
 
             TempData["Success"] = "Para başarıyla yatırıldı.";
             return RedirectToAction("Index", new { selectedAccountNo });
@@ -129,16 +148,34 @@ namespace OKbkm.Controllers
             _context.Add(history);
             _context.SaveChanges();
 
-            //await _kafka.SendMessageAsync("withdraw-topic", new TransactionEvent
+            //// 🔸 Kafka mesajı Withdraw işlemi için
+            //await _kafka.ProduceAsync("withdraw-topic", new
             //{
+            //    UserTC = userTC,
             //    AccountNo = account.AccountNo,
             //    Amount = amount,
             //    BalanceAfter = account.Balance,
-            //    Type = "Withdraw",
-            //    Timestamp = DateTime.UtcNow
+            //    TransactionType = "Withdraw",
+            //    Date = DateTime.UtcNow
             //});
-            await SendKafkaTransaction("withdraw-topic", "Withdraw", account.AccountNo, amount, account.Balance);
 
+            // Kafka mesajı Withdraw işlemi için
+            try
+            {
+                await _kafka.ProduceAsync("withdraw-topic", new
+                {
+                    UserTC = userTC,
+                    AccountNo = account.AccountNo,
+                    Amount = amount,
+                    BalanceAfter = account.Balance,
+                    TransactionType = "Withdraw",
+                    Date = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Kafka'ya Withdraw mesajı gönderilemedi: {ex.Message}");
+            }
 
             TempData["Success"] = "Para başarıyla çekildi.";
             return RedirectToAction("Index", new { selectedAccountNo });
@@ -231,59 +268,65 @@ namespace OKbkm.Controllers
 
             _context.SaveChanges();
 
-            // Kafka'ya mesaj gönder (Gönderici)
-            //await _kafka.SendMessageAsync("transfer-topic", new TransactionEvent
+            //// 🔸 Kafka mesajı Transfer işlemi için
+            //await _kafka.ProduceAsync("transfer-topic", new
             //{
+            //    UserTC = userTC,
             //    AccountNo = senderAccount.AccountNo,
             //    Amount = amount,
             //    BalanceAfter = senderAccount.Balance,
-            //    Type = "Transfer-Sent",
-            //    Timestamp = DateTime.UtcNow
+            //    TransactionType = "Transfer - Gönderilen",
+            //    Date = DateTime.UtcNow
             //});
 
-            // Kafka'ya mesaj gönder (Alıcı)
-            //await _kafka.SendMessageAsync("transfer-topic", new TransactionEvent
+            //await _kafka.ProduceAsync("transfer-topic", new
             //{
+            //    UserTC = userTC,
             //    AccountNo = receiverAccount.AccountNo,
             //    Amount = amount,
             //    BalanceAfter = receiverAccount.Balance,
-            //    Type = "Transfer-Received",
-            //    Timestamp = DateTime.UtcNow
+            //    TransactionType = "Transfer - Alınan",
+            //    Date = DateTime.UtcNow
             //});
-            await SendKafkaTransaction("transfer-topic", "Transfer-Sent", senderAccount.AccountNo, amount, senderAccount.Balance);
-            await SendKafkaTransaction("transfer-topic", "Transfer-Received", receiverAccount.AccountNo, amount, receiverAccount.Balance);
+
+            // Gönderici Kafka mesajı
+            try
+            {
+                await _kafka.ProduceAsync("transfer-topic", new
+                {
+                    UserTC = userTC,
+                    AccountNo = senderAccount.AccountNo,
+                    Amount = amount,
+                    BalanceAfter = senderAccount.Balance,
+                    TransactionType = "Transfer - Gönderilen",
+                    Date = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Kafka'ya Transfer-Gönderilen mesajı gönderilemedi: {ex.Message}");
+            }
+
+            // Alıcı Kafka mesajı
+            try
+            {
+                await _kafka.ProduceAsync("transfer-topic", new
+                {
+                    AccountNo = receiverAccount.AccountNo,
+                    Amount = amount,
+                    BalanceAfter = receiverAccount.Balance,
+                    TransactionType = "Transfer - Alınan",
+                    Date = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Kafka'ya Transfer-Alınan mesajı gönderilemedi: {ex.Message}");
+            }
 
             TempData["Success"] = "Para başarıyla transfer edildi.";
             return RedirectToAction("Index", new { selectedAccountNo });
         }
-
-        // KAFKA mesajı gönderen ortak metot:
-        private async Task SendKafkaTransaction(string topic, string type, string accountNo, decimal amount, decimal balance)
-        {
-            await _kafka.SendMessageAsync(topic, new TransactionEvent
-            {
-                AccountNo = accountNo,
-                Amount = amount,
-                BalanceAfter = balance,
-                Type = type,
-                Timestamp = DateTime.UtcNow
-            });
-        }
-        //private async Task SendKafkaTransaction(string topic, string type, string accountNo, decimal amount, decimal balanceAfter)
-        //{
-        //    var transactionEvent = new TransactionEvent
-        //    {
-        //        AccountNo = accountNo,
-        //        Amount = amount,
-        //        BalanceAfter = balanceAfter,
-        //        Type = type,
-        //        Timestamp = DateTime.UtcNow
-        //    };
-
-        //    var message = JsonConvert.SerializeObject(transactionEvent);
-
-        //    await _kafkaProducer.SendAsync(topic, message);
-        //}
 
 
     }
