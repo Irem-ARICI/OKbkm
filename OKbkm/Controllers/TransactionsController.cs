@@ -82,38 +82,64 @@ namespace OKbkm.Controllers
             //    Date = DateTime.UtcNow
             //});
 
+            // Kafka mesajını oluştur
+            var kafkaMessage = new
+            {
+                UserTC = userTC,
+                AccountNo = account.AccountNo,
+                Amount = amount,
+                BalanceAfter = account.Balance,
+                TransactionType = "Deposit",
+                Date = DateTime.UtcNow
+            };
+
+            //try
+            //{
+            //    await _kafka.ProduceAsync("deposit-topic", new
+            //    {
+            //        UserTC = userTC,
+            //        AccountNo = account.AccountNo,
+            //        Amount = amount,
+            //        BalanceAfter = account.Balance,
+            //        TransactionType = "Deposit",
+            //        Date = DateTime.UtcNow
+            //    });
+            //}
+
+            // Kafka'ya gönder
             try
             {
-                await _kafka.ProduceAsync("deposit-topic", new
-                {
-                    UserTC = userTC,
-                    AccountNo = account.AccountNo,
-                    Amount = amount,
-                    BalanceAfter = account.Balance,
-                    TransactionType = "Deposit",
-                    Date = DateTime.UtcNow
-                });
+                await _kafka.ProduceAsync("deposit-topic", kafkaMessage);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ Kafka mesajı gönderilemedi: {ex.Message}");
+                // Logla ama işlemi iptal etme
+            }
+
+            TempData["Success"] = "Para başarıyla yatırıldı.";
+            return RedirectToAction("Index", new { selectedAccountNo });
+
             //catch (Exception ex)
             //{
             //    // 🔴 Basit loglama (gelişmiş log için Serilog veya ILogger kullanılabilir)
             //    Console.WriteLine($"Kafka'ya mesaj gönderilemedi: {ex.Message}");
             //}
-            catch (ProduceException<string, string> ex)
-            {
-                Console.WriteLine("🚨 Kafka ProduceException:");
-                Console.WriteLine($"• Reason: {ex.Error.Reason}");
-                Console.WriteLine($"• IsFatal: {ex.Error.IsFatal}");
-                Console.WriteLine($"• Code: {ex.Error.Code}");
-                //Console.WriteLine($"• Broker: {ex.BrokerMessage}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"🔥 Genel hata: {ex}");
-            }
+            //catch (ProduceException<string, string> ex)
+            //{
+            //    Console.WriteLine("🚨 Kafka ProduceException:");
+            //    Console.WriteLine($"• Reason: {ex.Error.Reason}");
+            //    Console.WriteLine($"• IsFatal: {ex.Error.IsFatal}");
+            //    Console.WriteLine($"• Code: {ex.Error.Code}");
+            //    //Console.WriteLine($"• Broker: {ex.BrokerMessage}");
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"🔥 Genel hata: {ex}");
+            //}
 
-            TempData["Success"] = "Para başarıyla yatırıldı.";
-            return RedirectToAction("Index", new { selectedAccountNo });
+            //TempData["Success"] = "Para başarıyla yatırıldı.";
+            //return RedirectToAction("Index", new { selectedAccountNo });
         }
 
         [HttpGet]

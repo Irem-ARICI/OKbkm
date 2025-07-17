@@ -1,4 +1,4 @@
-﻿﻿version: '3.8'
+﻿version: '3.8'
 
 services:
   # Zookeeper
@@ -27,8 +27,9 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,INTERNAL://kafka1:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,INTERNAL://kafka1:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://3.121.208.190:9092,INTERNAL://kafka1:29092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
     networks:
@@ -41,14 +42,15 @@ services:
     container_name: kafka2
     ports:
       - "9093:9093"
-      - "29093:29092"
+      - "29093:29093"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093,INTERNAL://kafka2:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29093,INTERNAL://kafka2:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://3.121.208.190:9093,INTERNAL://kafka2:29092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
     networks:
@@ -61,20 +63,21 @@ services:
     container_name: kafka3
     ports:
       - "9094:9094"
-      - "29094:29092"
+      - "29094:29094"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094,INTERNAL://kafka3:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29094,INTERNAL://kafka3:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://3.121.208.190:9094,INTERNAL://kafka3:29092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
     networks:
       - arici
 
-  # AKHQ - Kafka Monitoring UI
+  # AKHQ - Kafka UI
   akhq:
     image: tchiotludo/akhq
     container_name: akhq
@@ -120,7 +123,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://+:8080;https://+:8081"
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=okbkmDB;Username=postgres;Password=admin;
-      KAFKA__BOOTSTRAP__SERVERS: kafka1:29092,kafka2:29092,kafka3:29092
+      KAFKA__BOOTSTRAP__SERVERS: 3.121.208.190:9092,3.121.208.190:9093,3.121.208.190:9094
     ports:
       - "8080:8080"
       - "8081:8081"
