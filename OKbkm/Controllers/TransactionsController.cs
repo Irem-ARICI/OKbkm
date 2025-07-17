@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Confluent.Kafka;
+using Microsoft.AspNetCore.Mvc;
 using OKbkm.Models;
 using OKbkm.Services;
 using System.Linq;
@@ -93,10 +94,22 @@ namespace OKbkm.Controllers
                     Date = DateTime.UtcNow
                 });
             }
+            //catch (Exception ex)
+            //{
+            //    // 🔴 Basit loglama (gelişmiş log için Serilog veya ILogger kullanılabilir)
+            //    Console.WriteLine($"Kafka'ya mesaj gönderilemedi: {ex.Message}");
+            //}
+            catch (ProduceException<string, string> ex)
+            {
+                Console.WriteLine("🚨 Kafka ProduceException:");
+                Console.WriteLine($"• Reason: {ex.Error.Reason}");
+                Console.WriteLine($"• IsFatal: {ex.Error.IsFatal}");
+                Console.WriteLine($"• Code: {ex.Error.Code}");
+                //Console.WriteLine($"• Broker: {ex.BrokerMessage}");
+            }
             catch (Exception ex)
             {
-                // 🔴 Basit loglama (gelişmiş log için Serilog veya ILogger kullanılabilir)
-                Console.WriteLine($"Kafka'ya mesaj gönderilemedi: {ex.Message}");
+                Console.WriteLine($"🔥 Genel hata: {ex}");
             }
 
             TempData["Success"] = "Para başarıyla yatırıldı.";
