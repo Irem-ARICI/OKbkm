@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OKbkm;
 using OKbkm.Models;
-using OKbkm.Services;
+using OKbkm.Services; // KafkaProducerService burada tanımlı
 
 public class Program
 {
@@ -21,21 +21,14 @@ public class Program
         builder.Services.AddDbContext<Context>(options =>
             options.UseNpgsql(connectionString));
 
+        // Kafka servisini DI sistemine ekliyoruz
+        builder.Services.AddSingleton<KafkaProducerService>();
+
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllersWithViews();
         builder.Services.AddSession();
-
-        // 🔹 Kafka bootstrap adresini config'den al
-        var kafkaBootstrapServers = builder.Configuration["KAFKA__BOOTSTRAP__SERVERS"] ?? "kafka1:29092";
-
-        // 🔹 Kafka topic'leri oluştur
-        await KafkaTopicInitializer.EnsureTopicsExistAsync(kafkaBootstrapServers,
-            new[] { "deposit-topic", "withdraw-topic", "transfer-topic" });
-
-        // 🔹 Kafka Producer servisini DI'a ekle
-        builder.Services.AddSingleton(new KafkaProducerService(kafkaBootstrapServers));
 
         var app = builder.Build();
 
