@@ -31,7 +31,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://+:8080;https://+:8081"
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=okbkmDB;Username=postgres;Password=admin;
-      KAFKA__BOOTSTRAP__SERVERS: kafka1:29092,kafka2:29093,kafka3:29094
+      KAFKA__BOOTSTRAP__SERVERS: kafka1:19092,kafka2:19093,kafka3:19094
     ports:
       - "8080:8080"
       - "8081:8081"
