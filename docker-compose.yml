@@ -109,6 +109,7 @@ services:
     ports:
       - "8089:8089"
     environment:
+      SERVER_PORT: 8089
       AKHQ_CONFIGURATION: |
         akhq:
           connections:
