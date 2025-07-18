@@ -24,14 +24,14 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
-      - kafka1
-      - kafka2
-      - kafka3
+      - kafka11
+      - kafka12
+      - kafka13
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://+:8080;https://+:8081"
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=okbkmDB;Username=postgres;Password=admin;
-      KAFKA__BOOTSTRAP__SERVERS: kafka1:19092,kafka2:19093,kafka3:19094
+      KAFKA__BOOTSTRAP__SERVERS: kafka11:19092,kafka12:19093,kafka13:19094
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -48,7 +48,7 @@ services:
 
   kafka1:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka1
+    container_name: kafka11
     depends_on:
       - zookeeper
     ports:
@@ -57,7 +57,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:19092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka11:19092,PLAINTEXT_HOST://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
@@ -67,7 +67,7 @@ services:
 
   kafka2:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka2
+    container_name: kafka12
     depends_on:
       - zookeeper
     ports:
@@ -76,7 +76,7 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:19093,PLAINTEXT_HOST://localhost:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka12:19093,PLAINTEXT_HOST://localhost:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
@@ -86,7 +86,7 @@ services:
 
   kafka3:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka3
+    container_name: kafka13
     depends_on:
       - zookeeper
     ports:
@@ -95,7 +95,7 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:19094,PLAINTEXT_HOST://localhost:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka13:19094,PLAINTEXT_HOST://localhost:9094
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
@@ -114,16 +114,15 @@ services:
           connections:
             my-cluster:
               properties:
-                bootstrap.servers: "kafka1:19092,kafka2:19093,kafka3:19094"
+                bootstrap.servers: "kafka11:19092,kafka12:19093,kafka13:19094"
     depends_on:
-      - kafka1
-      - kafka2
-      - kafka3
+      - kafka11
+      - kafka12
+      - kafka13
 
 volumes:
   kafka1-data:
   kafka2-data:
   kafka3-data:
   okbkm_pgdata_volume:
-    external: true
 
