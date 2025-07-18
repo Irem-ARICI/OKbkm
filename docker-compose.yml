@@ -53,15 +53,17 @@ services:
   # Kafka Broker 1
   kafka1:
     image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka1
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://3.121.208.190:9092,INTERNAL://kafka1:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://0.0.0.0:9092,INTERNAL://kafka1:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     ports:
       - "9092:9092"
     networks:
@@ -70,15 +72,17 @@ services:
   # Kafka Broker 2
   kafka2:
     image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka2
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://3.121.208.190:9093,INTERNAL://kafka2:29093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://0.0.0.0:9093,INTERNAL://kafka2:29093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     ports:
       - "9093:9093"
     networks:
@@ -87,15 +91,17 @@ services:
   # Kafka Broker 3
   kafka3:
     image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka3
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://3.121.208.190:9094,INTERNAL://kafka3:29094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://0.0.0.0:9094,INTERNAL://kafka3:29094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     ports:
       - "9094:9094"
     networks:
