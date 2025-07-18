@@ -9,26 +9,11 @@ namespace OKbkm
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-
-                string connectionString = configuration.GetConnectionString("DefaultConnection");
-                optionsBuilder.UseNpgsql(connectionString);
-            }
-        }
-
-        public DbSet<AccountCreate> ACreates { get; set; }
         public DbSet<Login> Logins { get; set; }
         public DbSet<Register> Registers { get; set; }
-        public DbSet<TransactionHistory> THistories { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<AccountCreate> AccountCreates { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<TransactionHistory> TransactionHistories { get; set; }
     }
 }

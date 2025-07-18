@@ -43,11 +43,16 @@
         <a href="@Url.Action("Transfer", "Transactions", new { selectedAccountNo = ViewBag.SelectedAccountNo })" class="action-btn">TRANSFER</a>
     </div>
 
+    <div class="back-link-wrapper">
+    <a href="/UserPanel/Index" class="back-link">Home Sayfasına Dön</a>
+</div>
+
     @if (TempData["Success"] != null)
     {
         <div class="success-message">@TempData["Success"]</div>
     }
 </div>
+
 
 <style>
     body {
@@ -121,4 +126,18 @@
         border-radius: 8px;
         font-weight: bold;
     }
+
+    .back-link-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #4a47a3;
+    font-weight: bold;
+}
 </style>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OKbkm.Models;
+using OKbkm.Services;
 using System.Linq;
 
 namespace OKbkm.Controllers
@@ -7,10 +8,12 @@ namespace OKbkm.Controllers
     public class TransactionsController : Controller
     {
         private readonly Context _context;
+        private readonly KafkaProducerService _kafkaProducer;
 
-        public TransactionsController(Context context)
+        public TransactionsController(Context context, KafkaProducerService kafkaProducer)
         {
             _context = context;
+            _kafkaProducer = kafkaProducer;
         }
 
         [HttpGet]
@@ -44,7 +47,7 @@ namespace OKbkm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Deposit(decimal amount, string selectedAccountNo)
+        public async Task<IActionResult> Deposit(decimal amount, string selectedAccountNo)
         {
             var userTC = HttpContext.Session.GetString("UserTC");
             var account = _context.Accounts.FirstOrDefault(a => a.TC == userTC && a.AccountNo == selectedAccountNo);
@@ -64,8 +67,19 @@ namespace OKbkm.Controllers
                 TransactionDate = DateTime.UtcNow
             };
             _context.Add(history);
-
             _context.SaveChanges();
+
+            // Kafka Mesajı Gönder
+            var depositEvent = new TransactionEvent
+            {
+                AccountNo = account.AccountNo,
+                Amount = amount,
+                BalanceAfter = account.Balance,
+                Type = "Deposit",
+                Timestamp = DateTime.UtcNow
+            };
+
+            await _kafkaProducer.SendMessageAsync(depositEvent, "deposit");
 
             TempData["Success"] = "Para başarıyla yatırıldı.";
             return RedirectToAction("Index", new { selectedAccountNo });
@@ -82,7 +96,7 @@ namespace OKbkm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Withdraw(decimal amount, string selectedAccountNo)
+        public async Task<IActionResult> Withdraw(decimal amount, string selectedAccountNo)
         {
             var userTC = HttpContext.Session.GetString("UserTC");
 
@@ -116,30 +130,21 @@ namespace OKbkm.Controllers
             _context.Add(history);
             _context.SaveChanges();
 
+            // ✅ Kafka mesajı gönder
+            var withdrawEvent = new TransactionEvent
+            {
+                AccountNo = account.AccountNo,
+                Amount = amount,
+                BalanceAfter = account.Balance,
+                Type = "Withdraw",
+                Timestamp = DateTime.UtcNow
+            };
+
+            await _kafkaProducer.SendMessageAsync(withdrawEvent, "withdraw");
+
             TempData["Success"] = "Para başarıyla çekildi.";
             return RedirectToAction("Index", new { selectedAccountNo });
         }
-
-
-        //[HttpGet]
-        //public IActionResult Transfer()
-        //{
-        //    var userTC = HttpContext.Session.GetString("UserTC");
-
-        //    if (string.IsNullOrEmpty(userTC))
-        //        return RedirectToAction("Index", "Login");
-
-        //    var accounts = _context.Accounts
-        //        .Where(a => a.TC == userTC)
-        //        .ToList();
-
-        //    ViewBag.Accounts = accounts;
-
-        //    var selectedAccount = accounts.FirstOrDefault();
-        //    ViewBag.SelectedAccountNo = selectedAccount?.AccountNo;
-
-        //    return View();
-        //}
 
         [HttpGet]
         public IActionResult Transfer(string selectedAccountNo)
@@ -165,50 +170,9 @@ namespace OKbkm.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public IActionResult Transfer(string receiverAccountNo, decimal amount, string selectedAccountNo)
-        //{
-        //    var userTC = HttpContext.Session.GetString("UserTC");
-
-        //    var senderAccount = _context.Accounts.FirstOrDefault(a => a.TC == userTC && a.AccountNo == selectedAccountNo);
-        //    var receiverAccount = _context.Accounts.FirstOrDefault(a => a.AccountNo == receiverAccountNo);
-
-        //    if (senderAccount == null || receiverAccount == null)
-        //    {
-        //        ModelState.AddModelError("", "Gönderen veya alıcı hesap bulunamadı.");
-        //        return View();
-        //    }
-
-        //    if (senderAccount.Balance < amount)
-        //    {
-        //        ModelState.AddModelError("", "Yetersiz bakiye.");
-        //        return View();
-        //    }
-
-        //    senderAccount.Balance -= amount;
-        //    receiverAccount.Balance += amount;
-
-        //    _context.Update(senderAccount);
-        //    _context.Update(receiverAccount);
-
-        //    var history = new TransactionHistory
-        //    {
-        //        AccountNo = senderAccount.AccountNo,
-        //        TransactionAmount = amount,
-        //        BalanceAfter = senderAccount.Balance,
-        //        TransactionType = "Transfer",
-        //        TransactionDate = DateTime.UtcNow
-        //    };
-
-        //    _context.Add(history);
-        //    _context.SaveChanges();
-
-        //    TempData["Success"] = "Para başarıyla transfer edildi.";
-        //    return RedirectToAction("Index", new { selectedAccountNo });
-        //}
 
         [HttpPost]
-        public IActionResult Transfer(string receiverAccountNo, decimal amount, string selectedAccountNo)
+        public async Task<IActionResult> Transfer(string receiverAccountNo, decimal amount, string selectedAccountNo)
         {
             var userTC = HttpContext.Session.GetString("UserTC");
 
@@ -266,14 +230,32 @@ namespace OKbkm.Controllers
                 TransactionDate = DateTime.UtcNow
             };
             _context.Add(receiverHistory);
-
             _context.SaveChanges();
+
+            // Kafka mesajları gönderiliyor
+            var senderEvent = new TransactionEvent
+            {
+                AccountNo = senderAccount.AccountNo,
+                Amount = amount,
+                BalanceAfter = senderAccount.Balance,
+                Type = "Transfer-Sent",
+                Timestamp = DateTime.UtcNow
+            };
+
+            var receiverEvent = new TransactionEvent
+            {
+                AccountNo = receiverAccount.AccountNo,
+                Amount = amount,
+                BalanceAfter = receiverAccount.Balance,
+                Type = "Transfer-Received",
+                Timestamp = DateTime.UtcNow
+            };
+
+            await _kafkaProducer.SendMessageAsync(senderEvent, "transfer");
+            await _kafkaProducer.SendMessageAsync(receiverEvent, "transfer");
 
             TempData["Success"] = "Para başarıyla transfer edildi.";
             return RedirectToAction("Index", new { selectedAccountNo });
         }
-
-
-
     }
 }

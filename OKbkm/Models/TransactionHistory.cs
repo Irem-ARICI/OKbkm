@@ -19,6 +19,7 @@ namespace OKbkm.Models
 
         [Required]
         public string TransactionType { get; set; }
+        public string? Description { get; set; } //  Açıklama/mesaj desteği
 
         public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
     }

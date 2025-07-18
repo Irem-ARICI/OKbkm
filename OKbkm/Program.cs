@@ -1,49 +1,54 @@
 ﻿using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using OKbkm;
 using OKbkm.Models;
+using OKbkm.Services; // KafkaProducerService burada tanımlı
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-// appsettings.json’dan ConnectionString’i al
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<Context>(options =>   // PostgreSQL bağlantısını ekle
-    options.UseNpgsql(connectionString));
-
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-//builder.Services.AddControllers();
-builder.Services.AddControllersWithViews();
-builder.Services.AddSession(); // Session'ı ekliyoruz
-
-
-
-var app = builder.Build();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            ContentRootPath = AppContext.BaseDirectory,
+            WebRootPath = Path.Combine(AppContext.BaseDirectory, "wwwroot")
+        });
+
+        builder.WebHost.UseUrls("http://0.0.0.0:8080", "http://0.0.0.0:8081");
+
+        // 🔹 ConnectionString
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<Context>(options =>
+            options.UseNpgsql(connectionString));
+
+        // Kafka servisini DI sistemine ekliyoruz
+        builder.Services.AddSingleton<KafkaProducerService>();
+
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddControllersWithViews();
+        builder.Services.AddSession();
+
+        var app = builder.Build();
+
+        // Middleware pipeline
+        app.UseStaticFiles();
+        app.UseRouting();
+        app.UseSession();
+        app.UseAuthorization();
+
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.MapControllers();
+        await app.RunAsync();
+    }
 }
-app.UseSession(); // Middleware olarak kullanıyoruz
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.UseStaticFiles();
-
-app.Run();

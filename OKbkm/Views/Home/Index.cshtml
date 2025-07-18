@@ -1,109 +1,164 @@
 ﻿@{
-    ViewData["Title"] = "Ana Sayfa";
+    ViewData["Title"] = "BKM Hakkında";
+    Layout = null;
 }
 
-<div class="home-container">
-    <header>
-        <nav class="navbar">
-            <a href="#" class="logo">OKbkm Bank</a>
-            <a href="/Login/Index" class="login-button">Giriş Yap</a>
-        </nav>
-    </header>
-    <h1>BKM İRO'ya Hoş Geldiniz</h1>
-    <div class="hero-image">
-        <img src="~/Images/BKM_.png" alt="BKM Bank" asp-append-version="true">
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>BKM Hakkında</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(to right, #a18cd1, #fbc2eb);
+        }
+
+        .navbar {
+            background-color: black;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .navbar h1 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .navbar a {
+                background-color: hotpink;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+        .header {
+            text-align: center;
+            margin: 30px auto 10px;
+            color: white;
+        }
+
+        .banner {
+            text-align: center;
+            margin: 20px auto;
+        }
+
+
+        .banner-image {
+            max-width: 600px; /* İsteğe göre artır */
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px auto;
+            padding: 0 40px;
+        }
+
+        .info-box {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1 1 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            max-width: 600px;
+        }
+
+            .info-box h2 {
+                color: #d63384;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .info-box p {
+                font-size: 15px;
+                text-align: justify;
+            }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>OKbkm Bank</h1>
+        <a href="/Login/Index">Giriş Yap</a>
     </div>
-    <div class="content">
+
+    <div class="header">
+        <h2>BKM İRO'ya Hoş Geldiniz</h2>
+    </div>
+
+    <div class="banner">
+        <img src="~/Images/BKM_.png" alt="BKM Bank" asp-append-version="true" class="banner-image">
+        <div style="color: white; margin-top: 10px;">BKM Express ile Tüm Kartlarınız Elinizin Altında</div>
+    </div>
+
+    <div class="section-container">
         <div class="info-box">
             <h2>Banka Hakkında</h2>
-            <p>OKbkm Bank, dijital finans dünyasında yenilikçi çözümler sunan, güvenilir ve modern bir bankacılık platformudur. Müşterilerine, kolay, hızlı ve güvenli bankacılık deneyimi sağlamak için gelişmiş teknoloji kullanmaktadır.</p>
-            <p>Bankamız, müşteri odaklı çözümleriyle, internet ve mobil bankacılığı en iyi şekilde entegre ederek, kullanıcı dostu bir hizmet anlayışı sunar.</p>
+            <p>
+                OKbkm Bank, dijital finans dünyasında yenilikçi çözümler sunan, güvenilir ve modern bir bankacılık platformudur.
+                Müşterilerine, kolay, hızlı ve güvenli bankacılık deneyimi sağlamak için gelişmiş teknolojileri kullanmaktadır.
+            </p>
+            <p>
+                Bankamız, müşteri odaklı çözümleriyle, internet ve mobil bankacılığı en iyi şekilde entegre ederek, kullanıcı dostu bir hizmet anlayışı sunar.
+            </p>
         </div>
+
         <div class="info-box">
             <h2>Detaylı Bilgiler</h2>
-            <p>OKbkm Bank, geniş işlem ağı, güçlü güvenlik altyapısı ve kullanıcı dostu hizmet anlayışı ile finansal ihtiyaçlarınıza çözüm sunar. Güvenli ödeme sistemleri ve esnek finansal çözümlerle, tüm müşterilerine kaliteli bir deneyim sunar.</p>
-            <p>Uluslararası güvenlik standartlarına uygun olarak geliştirilen altyapımız sayesinde, tüm işlemleriniz yüksek güvenlik önlemleri ile korunmaktadır. Daha fazla bilgi almak için bizimle iletişime geçebilirsiniz.</p>
+            <p>
+                OKbkm Bank, geniş işlem ağı, güçlü güvenlik altyapısı ve kullanıcı dostu hizmet anlayışı ile finansal ihtiyaçlarınıza çözüm sunar.
+                Güvenli ödeme sistemleri ve esnek finansal çözümlerle, tüm müşterilerine kaliteli bir deneyim sunar.
+            </p>
+            <p>
+                Uluslararası güvenlik standartlarına uygun olarak geliştirilen altyapımız sayesinde, tüm işlemleriniz yüksek güvenlik önlemleri ile korunmaktadır.
+                Daha fazla bilgi almak için bizimle iletişime geçebilirsiniz.
+            </p>
         </div>
     </div>
-</div>
 
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }    
-    .navbar {
-        background: black;
-        color: white;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-    }
-    .navbar .logo {
-        font-size: 22px;
-        font-weight: bold;
-        text-decoration: none;
-        color: white;
-        margin-right: auto;
-    }
-    .login-button {
-        padding: 10px 20px;
-        background: #d63384;
-        color: white;
-        text-decoration: none;
-        border-radius: 20px;
-        font-size: 16px;
-        margin-right: 20px;
-    }
-    .login-button:hover {
-        background: #b8266c;
-    }
-    .home-container {
-        text-align: center;
-        padding: 100px 50px 50px 50px;
-    }
-    .hero-image {
-        margin: 20px 0;
-    }
-    .hero-image img {
-        max-width: 500px;
-        border-radius: 10px;
-    }
-    .content {
-        display: flex;
-        justify-content: space-between;
-        gap: 50px;
-        margin-top: 30px;
-    }
-    .info-box {
-        width: 75%;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        text-align: left;
-    }
-    .info-box h2 {
-        color: #d63384;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    .info-box p {
-        font-size: 14px;
-        line-height: 1.6;
-        text-align: justify;
-    }
+    <div class="section-container">
+        <div class="info-box">
+            <h2>Hizmetlerimiz</h2>
+            <p>
+                <strong>TROY:</strong> Türkiye'nin yerli ödeme yöntemi.<br />
+                <strong>BKM Express:</strong> Dijital cüzdan ve hızlı ödeme sistemi.<br />
+                <strong>YTHS:</strong> Kartlı işlemlerin takas ve mutabakatını sağlar.<br />
+                <strong>Ödeme İste:</strong> FAST sistemi ile ödeme taleplerinizi anlık yönetin.
+            </p>
+        </div>
 
-    .topbar .right {
-        padding-right: 300px;
-    }
+        <div class="info-box">
+            <h2>İletişim</h2>
+            <p>
+                <strong>Adres:</strong> Nispetiye Caddesi Akmerkez E3 Blok Kat:3 & 5 Etiler, Beşiktaş, İstanbul, Türkiye<br />
+                <strong>Web Sitesi:</strong> <a href="https://bkm.com.tr" target="_blank">https://bkm.com.tr</a><br />
+                <strong>Telefon:</strong> +90 212 282 0110
+            </p>
+        </div>
+    </div>
 
-</style>
+    <div class="footer">
+        © 2025 OKbkm Bank. Tüm Hakları Saklıdır.
+    </div>
+</body>
+</html>
