@@ -12,8 +12,8 @@ using OKbkm;
 namespace OKbkm.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250506090459_TransactionHistoryUpdateMigration")]
-    partial class TransactionHistoryUpdateMigration
+    [Migration("20250718130056_table")]
+    partial class table
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,7 +86,7 @@ namespace OKbkm.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("AccountCreate");
+                    b.ToTable("AccountCreates");
                 });
 
             modelBuilder.Entity("OKbkm.Models.Login", b =>
@@ -184,7 +184,7 @@ namespace OKbkm.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionHistory");
+                    b.ToTable("TransactionHistories");
                 });
 
             modelBuilder.Entity("OKbkm.Models.Transactions", b =>

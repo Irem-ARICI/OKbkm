@@ -7,13 +7,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OKbkm.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigrations : Migration
+    public partial class table : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AccountCreate",
+                name: "AccountCreates",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -26,7 +26,7 @@ namespace OKbkm.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountCreate", x => x.id);
+                    table.PrimaryKey("PK_AccountCreates", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,7 +81,7 @@ namespace OKbkm.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "THistories",
+                name: "TransactionHistories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -90,11 +90,12 @@ namespace OKbkm.Migrations
                     TransactionAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     BalanceAfter = table.Column<decimal>(type: "numeric", nullable: false),
                     TransactionType = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     TransactionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_THistories", x => x.Id);
+                    table.PrimaryKey("PK_TransactionHistories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,7 +125,7 @@ namespace OKbkm.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountCreate");
+                name: "AccountCreates");
 
             migrationBuilder.DropTable(
                 name: "Accounts");
@@ -136,7 +137,7 @@ namespace OKbkm.Migrations
                 name: "Registers");
 
             migrationBuilder.DropTable(
-                name: "THistories");
+                name: "TransactionHistories");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
