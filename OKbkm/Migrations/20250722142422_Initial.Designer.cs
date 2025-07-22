@@ -12,8 +12,8 @@ using OKbkm;
 namespace OKbkm.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250722131830_InitialMig")]
-    partial class InitialMig
+    [Migration("20250722142422_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
