@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OKbkm.Migrations
 {
     /// <inheritdoc />
-    public partial class ilk : Migration
+    public partial class InitialMig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -81,6 +81,23 @@ namespace OKbkm.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TransactionEvents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountNo = table.Column<string>(type: "text", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    BalanceAfter = table.Column<decimal>(type: "numeric", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionEvents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TransactionHistories",
                 columns: table => new
                 {
@@ -135,6 +152,9 @@ namespace OKbkm.Migrations
 
             migrationBuilder.DropTable(
                 name: "Registers");
+
+            migrationBuilder.DropTable(
+                name: "TransactionEvents");
 
             migrationBuilder.DropTable(
                 name: "TransactionHistories");
