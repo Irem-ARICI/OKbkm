@@ -1,7 +1,11 @@
-﻿namespace OKbkm.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OKbkm.Models
 {
     public class TransactionEvent
     {
+        [Key]
+        public int Id { get; set; }
         public string AccountNo { get; set; }
         public decimal Amount { get; set; }
         public decimal BalanceAfter { get; set; }

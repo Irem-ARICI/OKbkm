@@ -12,8 +12,8 @@ using OKbkm;
 namespace OKbkm.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250718130056_table")]
-    partial class table
+    [Migration("20250722102503_CreateTransactionEvents")]
+    partial class CreateTransactionEvents
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

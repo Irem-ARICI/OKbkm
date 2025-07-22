@@ -23,6 +23,7 @@ public class Program
 
         // Kafka servisini DI sistemine ekliyoruz
         builder.Services.AddSingleton<KafkaProducerService>();
+        builder.Services.AddHostedService<KafkaConsumerService>();
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
@@ -31,6 +32,9 @@ public class Program
         builder.Services.AddSession();
 
         var app = builder.Build();
+
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("OKbkm Uygulaması başlatıldı...");
 
         // Middleware pipeline
         app.UseStaticFiles();

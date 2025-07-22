@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OKbkm.Migrations
 {
     /// <inheritdoc />
-    public partial class table : Migration
+    public partial class ilk : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
