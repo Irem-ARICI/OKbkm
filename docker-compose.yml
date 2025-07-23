@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - okbkm_pgdata_volume:/var/lib/postgresql/data
 
